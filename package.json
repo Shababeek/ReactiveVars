@@ -1,0 +1,23 @@
+{
+    "name": "com.shababeek.reactivevars",
+    "version": "1.0.0",
+    "displayName": "Reactive Vars",
+    "description": "A reactive variable system built on ScriptableObjects with event-driven bindings, tween support, and editor tooling.",
+    "unity": "6000.0",
+    "dependencies": {
+        "com.unity.textmeshpro": "3.0.6"
+    },
+    "author": {
+        "name": "Ahmadabobakr",
+        "email": "Ahmadabobakr@gmail.com",
+        "url": "Ahmadabobakr.github.io"
+    },
+    "company": "Shababeek",
+    "keywords": [
+        "reactive",
+        "scriptable-objects",
+        "variables",
+        "events",
+        "data-binding"
+    ]
+}

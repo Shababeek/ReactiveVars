@@ -1,0 +1,19 @@
+{
+    "name": "Shababeek.ReactiveVars.Editor",
+    "rootNamespace": "Shababeek.ReactiveVars.Editor",
+    "references": [
+        "UniRx",
+        "Shababeek.ReactiveVars"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
