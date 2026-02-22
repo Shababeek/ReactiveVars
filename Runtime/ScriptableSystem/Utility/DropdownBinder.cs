@@ -3,7 +3,7 @@ using TMPro;
 using UniRx;
 using Shababeek.ReactiveVars;
 
-namespace Shababeek.Interactions
+namespace Shababeek.ReactiveVars
 {
     /// <summary>
     /// Binds an IntVariable to a TMP_Dropdown with two-way synchronization.

@@ -3,7 +3,7 @@ using TMPro;
 using UniRx;
 using Shababeek.ReactiveVars;
 
-namespace Shababeek.Interactions
+namespace Shababeek.ReactiveVars
 {
     /// <summary>
     /// Binds a TextVariable to a TMP_InputField with two-way synchronization.
