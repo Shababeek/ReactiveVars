@@ -10,16 +10,16 @@ namespace Shababeek.ReactiveVars.Editors
     [CustomEditor(typeof(VariableContainer))]
     public class VariableContainerEditor : Editor
     {
-        private VariableContainer _container;
-        private ReorderableList _variableList;
-        private ReorderableList _eventList;
+        protected VariableContainer _container;
+        protected ReorderableList _variableList;
+        protected ReorderableList _eventList;
 
         // Foldout states
-        private bool _showVariables = true;
-        private bool _showEvents = true;
+        protected bool _showVariables = true;
+        protected bool _showEvents = true;
 
         // Cached serialized objects for sub-assets
-        private readonly Dictionary<UnityEngine.Object, SerializedObject> _serializedCache = new();
+        protected readonly Dictionary<UnityEngine.Object, SerializedObject> _serializedCache = new();
 
         // Built-in variable types with known categories
         private static readonly Dictionary<Type, (string displayName, string category)> BuiltInTypes = new()
@@ -88,21 +88,21 @@ namespace Shababeek.ReactiveVars.Editors
             }
         }
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             _container = (VariableContainer)target;
             SetupVariableList();
             SetupEventList();
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             _serializedCache.Clear();
         }
 
         // ==================== LIST SETUP ====================
 
-        private void SetupVariableList()
+        protected virtual void SetupVariableList()
         {
             var prop = serializedObject.FindProperty("variables");
             _variableList = new ReorderableList(serializedObject, prop, true, true, true, true)
@@ -115,7 +115,7 @@ namespace Shababeek.ReactiveVars.Editors
             };
         }
 
-        private void SetupEventList()
+        protected virtual void SetupEventList()
         {
             var prop = serializedObject.FindProperty("events");
             _eventList = new ReorderableList(serializedObject, prop, true, true, true, true)
@@ -272,23 +272,18 @@ namespace Shababeek.ReactiveVars.Editors
             menu.ShowAsContext();
         }
 
-        private void AddVariable(Type type, string baseName)
+        protected void AddVariable(Type type, string baseName)
         {
-            string assetPath = AssetDatabase.GetAssetPath(_container);
-
-            // Create the variable instance
             var variable = (ScriptableVariable)CreateInstance(type);
             variable.name = GenerateUniqueName(baseName, isVariable: true);
 
-            // Add as sub-asset
             Undo.RecordObject(_container, "Add Variable");
-            AssetDatabase.AddObjectToAsset(variable, assetPath);
+            AssetDatabase.AddObjectToAsset(variable, _container);
             _container.EditorAddVariable(variable);
 
-            // Refresh
             serializedObject.Update();
             AssetDatabase.SaveAssets();
-            AssetDatabase.ImportAsset(assetPath);
+            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(_container));
         }
 
         private void OnRemoveVariable(ReorderableList list)
@@ -312,23 +307,23 @@ namespace Shababeek.ReactiveVars.Editors
             AssetDatabase.SaveAssets();
         }
 
-        private void OnAddEvent(ReorderableList list)
+        protected void AddEvent(string baseName)
         {
-            string assetPath = AssetDatabase.GetAssetPath(_container);
-
-            // Create GameEvent instance
             var evt = CreateInstance<GameEvent>();
-            evt.name = GenerateUniqueName("Event", isVariable: false);
+            evt.name = GenerateUniqueName(baseName, isVariable: false);
 
-            // Add as sub-asset
             Undo.RecordObject(_container, "Add Event");
-            AssetDatabase.AddObjectToAsset(evt, assetPath);
+            AssetDatabase.AddObjectToAsset(evt, _container);
             _container.EditorAddEvent(evt);
 
-            // Refresh
             serializedObject.Update();
             AssetDatabase.SaveAssets();
-            AssetDatabase.ImportAsset(assetPath);
+            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(_container));
+        }
+
+        private void OnAddEvent(ReorderableList list)
+        {
+            AddEvent("Event");
         }
 
         private void OnRemoveEvent(ReorderableList list)
@@ -354,7 +349,7 @@ namespace Shababeek.ReactiveVars.Editors
 
         // ==================== UTILITY METHODS ====================
 
-        private SerializedObject GetSerializedObject(UnityEngine.Object obj)
+        protected SerializedObject GetSerializedObject(UnityEngine.Object obj)
         {
             if (!_serializedCache.TryGetValue(obj, out var so))
             {
@@ -364,7 +359,7 @@ namespace Shababeek.ReactiveVars.Editors
             return so;
         }
 
-        private string GetDisplayName(string fullName)
+        protected string GetDisplayName(string fullName)
         {
             // Remove "ContainerName_" prefix if present
             string prefix = _container.name + "_";
@@ -389,7 +384,7 @@ namespace Shababeek.ReactiveVars.Editors
             AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(_container));
         }
 
-        private string GenerateUniqueName(string baseName, bool isVariable)
+        protected string GenerateUniqueName(string baseName, bool isVariable)
         {
             string prefix = _container.name + "_";
             string fullName = prefix + baseName;
