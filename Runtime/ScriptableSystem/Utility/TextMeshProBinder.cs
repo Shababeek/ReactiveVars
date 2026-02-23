@@ -31,7 +31,7 @@ namespace Shababeek.ReactiveVars
             _disposable = new CompositeDisposable();
             if(_textUI) _textUI.text = variable.ToString();
             if(_text3D) _text3D.text = variable.ToString();
-            variable.OnRaised.Do(_ => UpdateText()).Subscribe().AddTo(this);
+            variable.OnRaised.Do(_ => UpdateText()).Subscribe().AddTo(_disposable);
         }
         private string FormatValue(object value)
         {
