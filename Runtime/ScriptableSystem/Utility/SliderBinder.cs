@@ -105,7 +105,6 @@ namespace Shababeek.ReactiveVars
 
             if (useValueMapping)
             {
-                // Map variable range to slider range (0-1 for normalized, or slider min/max)
                 float t = Mathf.InverseLerp(minVariableValue, maxVariableValue, variableValue);
                 sliderValue = Mathf.Lerp(_slider.minValue, _slider.maxValue, t);
             }
@@ -127,7 +126,6 @@ namespace Shababeek.ReactiveVars
 
             if (useValueMapping)
             {
-                // Map slider range to variable range
                 float t = Mathf.InverseLerp(_slider.minValue, _slider.maxValue, sliderValue);
                 variableValue = Mathf.Lerp(minVariableValue, maxVariableValue, t);
             }
@@ -140,16 +138,7 @@ namespace Shababeek.ReactiveVars
             {
                 variableValue = Mathf.Round(variableValue);
             }
-
-            // Set the variable value
-            if (variable is IntVariable intVar)
-            {
-                intVar.Value = Mathf.RoundToInt(variableValue);
-            }
-            else if (variable is FloatVariable floatVar)
-            {
-                floatVar.Value = variableValue;
-            }
+            _numericalVariable.SetFromFloat(variableValue);
 
             _isUpdating = false;
         }
