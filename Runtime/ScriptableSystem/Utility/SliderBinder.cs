@@ -5,32 +5,28 @@ using UnityEngine.UI;
 namespace Shababeek.ReactiveVars
 {
     /// <summary>
-    /// Binds a numeric variable (Int or Float) to a UI Slider.
-    /// Supports bidirectional binding - variable changes update slider, slider changes update variable.
+    /// Binds a numeric variable to a UI Slider with configurable binding direction.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Binders/Slider Binder")]
+    [AddComponentMenu("Shababeek/Scriptable System/Slider Binder")]
     [RequireComponent(typeof(Slider))]
     public class SliderBinder : MonoBehaviour
     {
-        [Tooltip("The numeric variable to bind (IntVariable or FloatVariable).")]
         [SerializeField] private ScriptableVariable variable;
 
         [Header("Binding Mode")]
-        [Tooltip("How to bind the variable to the slider.")]
         [SerializeField] private BindingMode bindingMode = BindingMode.TwoWay;
 
         [Header("Value Mapping")]
         [Tooltip("Map variable value to slider range. If false, uses variable value directly.")]
         [SerializeField] private bool useValueMapping = false;
 
-        [Tooltip("Minimum variable value (maps to slider min).")]
+        [Tooltip("Variable value that maps to slider min.")]
         [SerializeField] private float minVariableValue = 0f;
 
-        [Tooltip("Maximum variable value (maps to slider max).")]
+        [Tooltip("Variable value that maps to slider max.")]
         [SerializeField] private float maxVariableValue = 100f;
 
         [Header("Options")]
-        [Tooltip("Round values to whole numbers (useful for IntVariable).")]
         [SerializeField] private bool roundToInt = false;
 
         private Slider _slider;
@@ -38,13 +34,14 @@ namespace Shababeek.ReactiveVars
         private INumericalVariable _numericalVariable;
         private bool _isUpdating;
 
+        /// <summary>Defines how the slider and variable stay in sync.</summary>
         public enum BindingMode
         {
-            /// <summary>Variable changes update slider only</summary>
+            /// <summary>Variable changes update slider only.</summary>
             OneWayToSlider,
-            /// <summary>Slider changes update variable only</summary>
+            /// <summary>Slider changes update variable only.</summary>
             OneWayToVariable,
-            /// <summary>Both directions sync</summary>
+            /// <summary>Both directions sync.</summary>
             TwoWay
         }
 
@@ -70,18 +67,14 @@ namespace Shababeek.ReactiveVars
                 return;
             }
 
-            // Subscribe to variable changes (for OneWayToSlider and TwoWay)
             if (bindingMode != BindingMode.OneWayToVariable)
             {
-                // Initial sync
                 UpdateSliderFromVariable();
-
                 variable.OnRaised
                     .Subscribe(_ => UpdateSliderFromVariable())
                     .AddTo(_disposable);
             }
 
-            // Subscribe to slider changes (for OneWayToVariable and TwoWay)
             if (bindingMode != BindingMode.OneWayToSlider)
             {
                 _slider.onValueChanged.AsObservable()
@@ -99,82 +92,56 @@ namespace Shababeek.ReactiveVars
         {
             if (_isUpdating) return;
             _isUpdating = true;
-
-            float variableValue = _numericalVariable.AsFloat;
-            float sliderValue;
-
-            if (useValueMapping)
+            try
             {
-                float t = Mathf.InverseLerp(minVariableValue, maxVariableValue, variableValue);
-                sliderValue = Mathf.Lerp(_slider.minValue, _slider.maxValue, t);
+                float value = _numericalVariable.AsFloat;
+                _slider.value = useValueMapping
+                    ? Mathf.Lerp(_slider.minValue, _slider.maxValue,
+                        Mathf.InverseLerp(minVariableValue, maxVariableValue, value))
+                    : value;
             }
-            else
-            {
-                sliderValue = variableValue;
-            }
-
-            _slider.value = sliderValue;
-            _isUpdating = false;
+            finally { _isUpdating = false; }
         }
 
         private void OnSliderValueChanged(float sliderValue)
         {
             if (_isUpdating) return;
             _isUpdating = true;
-
-            float variableValue;
-
-            if (useValueMapping)
+            try
             {
-                float t = Mathf.InverseLerp(_slider.minValue, _slider.maxValue, sliderValue);
-                variableValue = Mathf.Lerp(minVariableValue, maxVariableValue, t);
-            }
-            else
-            {
-                variableValue = sliderValue;
-            }
+                float value = useValueMapping
+                    ? Mathf.Lerp(minVariableValue, maxVariableValue,
+                        Mathf.InverseLerp(_slider.minValue, _slider.maxValue, sliderValue))
+                    : sliderValue;
 
-            if (roundToInt)
-            {
-                variableValue = Mathf.Round(variableValue);
+                if (roundToInt) value = Mathf.Round(value);
+                _numericalVariable.SetFromFloat(value);
             }
-            _numericalVariable.SetFromFloat(variableValue);
-
-            _isUpdating = false;
+            finally { _isUpdating = false; }
         }
 
-        /// <summary>
-        /// Manually sync the slider to the current variable value.
-        /// </summary>
+        /// <summary>Manually syncs the slider to the current variable value.</summary>
         public void SyncSliderToVariable()
         {
             if (_numericalVariable != null)
-            {
                 UpdateSliderFromVariable();
-            }
         }
 
-        /// <summary>
-        /// Manually sync the variable to the current slider value.
-        /// </summary>
+        /// <summary>Manually syncs the variable to the current slider value.</summary>
         public void SyncVariableToSlider()
         {
             if (_slider != null && _numericalVariable != null)
-            {
                 OnSliderValueChanged(_slider.value);
-            }
         }
 
-        /// <summary>
-        /// Sets up the slider min/max from the variable value mapping.
-        /// </summary>
+        /// <summary>Copies value mapping range to slider min/max and disables mapping.</summary>
         [ContextMenu("Setup Slider Range From Mapping")]
         public void SetupSliderRangeFromMapping()
         {
             if (_slider == null) _slider = GetComponent<Slider>();
             _slider.minValue = minVariableValue;
             _slider.maxValue = maxVariableValue;
-            useValueMapping = false; // Direct mapping now
+            useValueMapping = false;
         }
     }
 }

@@ -1,53 +1,35 @@
-using UnityEngine;
 using TMPro;
-using UniRx;
-using Shababeek.ReactiveVars;
+using UnityEngine;
 
 namespace Shababeek.ReactiveVars
 {
     /// <summary>
     /// Binds an IntVariable to a TMP_Dropdown with two-way synchronization.
     /// </summary>
-    [AddComponentMenu("Shababeek/ScriptableSystem/Binders/Dropdown Binder")]
-    public class DropdownBinder : MonoBehaviour
+    [AddComponentMenu("Shababeek/Scriptable System/Dropdown Binder")]
+    [RequireComponent(typeof(TMP_Dropdown))]
+    public class DropdownBinder : TwoWayVariableBinder<IntVariable>
     {
-        [Header("Variable")]
-        [SerializeField]
-        [Tooltip("The IntVariable that stores the dropdown selection index.")]
-        private IntVariable dropdownValue;
+        [SerializeField] private IntVariable dropdownValue;
 
-        [Header("UI Component")]
-        [SerializeField]
-        [Tooltip("The TMP_Dropdown component to bind.")]
-        private TMP_Dropdown dropdown;
+        private TMP_Dropdown _dropdown;
 
-        private CompositeDisposable disposables;
+        protected override IntVariable Variable => dropdownValue;
 
-        private void OnEnable()
+        private void Awake()
         {
-            if (dropdownValue == null || dropdown == null)
-                return;
-
-            disposables = new CompositeDisposable();
-
-            // Dropdown → Variable
-            dropdown.onValueChanged
-                .AsObservable()
-                .Subscribe(value => dropdownValue.Value = value)
-                .AddTo(disposables);
-
-            // Variable → Dropdown
-            dropdownValue.OnValueChanged
-                .Subscribe(value => dropdown.value = value)
-                .AddTo(disposables);
-
-            // Sync initial state
-            dropdown.value = dropdownValue.Value;
+            _dropdown = GetComponent<TMP_Dropdown>();
         }
 
-        private void OnDisable()
+        protected override void UpdateUIFromVariable()
         {
-            disposables?.Dispose();
+            _dropdown.value = dropdownValue.Value;
+        }
+
+        protected override void SubscribeToUI()
+        {
+            SubscribeUIEvent(_dropdown.onValueChanged, value =>
+                GuardedUpdate(() => dropdownValue.Value = value));
         }
     }
 }
