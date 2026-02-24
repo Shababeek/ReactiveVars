@@ -5,7 +5,9 @@ namespace Shababeek.ReactiveVars
 {
     /// <summary>
     /// Tweens any INumericalVariable's value toward a target float.
-    /// Pushes interpolated values directly into the variable via SetFromFloat each frame.
+    /// Uses SetFromFloatWithoutNotify during interpolation to avoid per-frame event overhead,
+    /// then calls SetFromFloat on completion to fire a single notification.
+    /// Pair with a binder in Poll mode if you need visuals to update every frame.
     /// </summary>
     public class TweenableNumerical : ITweenable
     {
@@ -71,10 +73,14 @@ namespace Shababeek.ReactiveVars
 
             float eval = _curve != null ? _curve.Evaluate(Mathf.Clamp01(_t)) : _t;
             float value = Mathf.Lerp(_start, _target, eval);
+
+            if (_t < 1f)
+            {
+                _variable.SetFromFloatWithoutNotify(value);
+                return false;
+            }
+
             _variable.SetFromFloat(value);
-
-            if (_t < 1f) return false;
-
             OnFinished?.Invoke();
             return true;
         }
