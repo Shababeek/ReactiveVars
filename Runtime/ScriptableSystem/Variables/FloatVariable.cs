@@ -21,6 +21,9 @@ namespace Shababeek.ReactiveVars
         public override void SetFromFloat(float value) => Value = value;
 
         /// <inheritdoc/>
+        public override void SetFromFloatWithoutNotify(float value) => SetValueWithoutNotify(value);
+
+        /// <inheritdoc/>
         public override void Add(float amount) => Value += amount;
 
         /// <inheritdoc/>

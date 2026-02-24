@@ -21,7 +21,10 @@ namespace Shababeek.ReactiveVars
 
         
         public abstract void SetFromFloat(float value);
-        
+
+        /// <summary>Sets the value from a float without raising any events.</summary>
+        public abstract void SetFromFloatWithoutNotify(float value);
+
         public abstract void Add(float amount);
 
 
@@ -101,6 +104,9 @@ namespace Shababeek.ReactiveVars
 
         /// <summary>Sets the value from a float.</summary>
         void SetFromFloat(float value);
+
+        /// <summary>Sets the value from a float without raising any events.</summary>
+        void SetFromFloatWithoutNotify(float value);
 
         /// <summary>Adds an amount to the value.</summary>
         void Add(float amount);

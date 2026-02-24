@@ -59,9 +59,15 @@ namespace Shababeek.ReactiveVars
             }
         }
 
+        /// <summary>Sets the value without raising any events or notifying subscribers.</summary>
+        public void SetValueWithoutNotify(T newValue)
+        {
+            value = newValue;
+        }
+
         public void Init(T value)
         {
-            this.value = value; 
+            this.value = value;
         }
         /// <summary>
         /// Raises the game event with the current value.

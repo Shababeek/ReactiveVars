@@ -20,6 +20,9 @@ namespace Shababeek.ReactiveVars
         public override void SetFromFloat(float value) => Value = Mathf.RoundToInt(value);
 
         /// <inheritdoc/>
+        public override void SetFromFloatWithoutNotify(float value) => SetValueWithoutNotify(Mathf.RoundToInt(value));
+
+        /// <inheritdoc/>
         public override void Add(float amount) => Value += Mathf.RoundToInt(amount);
 
         /// <inheritdoc/>
