@@ -14,7 +14,7 @@ namespace Shababeek.ReactiveVars
     /// - Size indicators
     /// - Progress visualization
     /// </remarks>
-    [AddComponentMenu("Shababeek/Scriptable System/Numerical Scale Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Numerical Scale Binder")]
     public class NumericalScaleBinder : NumericalVariableBinder
     {
         [Tooltip("The numeric variable to bind (IntVariable or FloatVariable).")]

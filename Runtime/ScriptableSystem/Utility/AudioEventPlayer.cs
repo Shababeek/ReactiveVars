@@ -9,7 +9,7 @@ namespace Shababeek.ReactiveVars
     /// Listens to multiple AudioVariables and plays them at specified positions.
     /// </summary>
     [RequireComponent(typeof(AudioSource))]
-    [AddComponentMenu(menuName: "Shababeek/Scriptable System/Audio Event Player")]
+    [AddComponentMenu(menuName: "Shababeek/ReactiveVars/Binders/Audio Event Player")]
     public class AudioEventPlayer : MonoBehaviour
     {
         [Header("Event Audio Variables")]

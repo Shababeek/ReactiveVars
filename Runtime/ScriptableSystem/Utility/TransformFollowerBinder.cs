@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Makes this object follow the transform stored in a TransformVariable.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Transform Follower Binder")]
+    [AddComponentMenu("ReactiveVars/Binders/Transform Follower Binder")]
     public class TransformFollowerBinder : VariableBinder<TransformVariable>
     {
         [SerializeField] private TransformVariable variable;

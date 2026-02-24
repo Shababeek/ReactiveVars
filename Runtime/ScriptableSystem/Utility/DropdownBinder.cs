@@ -6,7 +6,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds an IntVariable to a TMP_Dropdown with two-way synchronization.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Dropdown Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Dropdown Binder")]
     [RequireComponent(typeof(TMP_Dropdown))]
     public class DropdownBinder : TwoWayVariableBinder<IntVariable>
     {

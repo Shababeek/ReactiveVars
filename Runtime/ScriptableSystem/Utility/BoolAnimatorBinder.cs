@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a BoolVariable to an Animator bool or trigger parameter.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Bool Animator Binder")]
+    [AddComponentMenu("ReactiveVars/Binders/Bool Animator Binder")]
     [RequireComponent(typeof(Animator))]
     public class BoolAnimatorBinder : VariableBinder<BoolVariable>
     {

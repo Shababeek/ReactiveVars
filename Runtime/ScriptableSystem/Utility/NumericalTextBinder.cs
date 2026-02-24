@@ -6,7 +6,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Displays a numeric variable as formatted text on a TextMeshPro component.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Numerical Text Binder")]
+    [AddComponentMenu("ReactiveVars/Binders/Numerical Text Binder")]
     [RequireComponent(typeof(TMP_Text))]
     public class NumericalTextBinder : NumericalVariableBinder
     {

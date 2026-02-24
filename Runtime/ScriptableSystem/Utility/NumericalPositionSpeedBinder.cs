@@ -16,7 +16,7 @@ namespace Shababeek.ReactiveVars
     /// - Elevator platforms (up/down input)
     /// - Throttle-controlled movement
     /// </remarks>
-    [AddComponentMenu("Shababeek/Scriptable System/Numerical Position Speed Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Numerical Position Speed Binder")]
     public class NumericalPositionSpeedBinder : NumericalVariableBinder
     {
         [Tooltip("The numeric variable to bind (IntVariable or FloatVariable).")]

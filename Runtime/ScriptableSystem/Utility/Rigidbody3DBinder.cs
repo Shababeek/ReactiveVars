@@ -23,7 +23,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds variables to Rigidbody 3D velocity/forces with multiple input modes.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Rigidbody 3D Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Rigidbody 3D Binder")]
     public class Rigidbody3DBinder : MonoBehaviour
     {
         [Header("Target")]

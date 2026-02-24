@@ -7,7 +7,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a ScriptableVariable to a UI element for live updates.
     /// </summary>
-    [AddComponentMenu(menuName: "Shababeek/Scriptable System/TMPro Variable Binder")]
+    [AddComponentMenu(menuName: "Shababeek/ReactiveVars/Binders/TMPro Variable Binder")]
     public class TextMeshProBinder : VariableBinder<ScriptableVariable>
     {
         [Tooltip("Format string (e.g., 'X' for hex, 'F2' for 2 decimals, 'N0' for thousands separator)")]

@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a numeric variable to an Animator float or int parameter.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Numerical Animator Binder")]
+    [AddComponentMenu("ReactiveVars/Binders/Numerical Animator Binder")]
     [RequireComponent(typeof(Animator))]
     public class NumericalAnimatorBinder : NumericalVariableBinder
     {

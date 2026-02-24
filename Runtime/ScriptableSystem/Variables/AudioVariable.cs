@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Shababeek.ReactiveVars
 {
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Variables/AudioVariable")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/AudioVariable")]
     public class AudioVariable : GameEvent
     {
         [SerializeField] private AudioClip clip;

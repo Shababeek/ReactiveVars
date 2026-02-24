@@ -7,10 +7,13 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Reads a Vector2 value from an InputAction each frame and writes it to a Vector2Variable.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Drivers/Input Action Vector2 Driver")]
+    [AddComponentMenu("ReactiveVars/Drivers/Input Action Vector2 Driver")]
     public class InputActionVector2Driver : VariableDriver<Vector2Variable>
     {
+        [Tooltip("The Vector2Variable to receive the input value.")]
         [SerializeField] private Vector2Variable variable;
+
+        [Tooltip("The InputAction to read Vector2 values from.")]
         [SerializeField] private InputActionReference inputAction;
 
         protected override Vector2Variable Variable => variable;

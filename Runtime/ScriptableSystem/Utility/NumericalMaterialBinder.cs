@@ -15,7 +15,7 @@ namespace Shababeek.ReactiveVars
     /// - Scrolling textures (UV offset)
     /// - Fill amount shaders
     /// </remarks>
-    [AddComponentMenu("Shababeek/Scriptable System/Numerical Material Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Numerical Material Binder")]
     public class NumericalMaterialBinder : NumericalVariableBinder
     {
         [Tooltip("The numeric variable to bind (IntVariable or FloatVariable).")]

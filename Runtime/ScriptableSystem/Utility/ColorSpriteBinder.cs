@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a ColorVariable to a SpriteRenderer's color for live updates.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Color Sprite Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Color Sprite Binder")]
     [RequireComponent(typeof(SpriteRenderer))]
     public class ColorSpriteBinder : VariableBinder<ColorVariable>
     {

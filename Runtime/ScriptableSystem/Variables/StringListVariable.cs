@@ -9,7 +9,7 @@ namespace Shababeek.ReactiveVars
     /// Scriptable variable that stores a list of strings.
     /// Useful for dialogue options, item names, tags, or any list of text values.
     /// </summary>
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Variables/StringListVariable")]
+    [CreateAssetMenu(menuName = "ReactiveVars/Variables/StringListVariable")]
     public class StringListVariable : ScriptableVariable<List<string>>
     {
         

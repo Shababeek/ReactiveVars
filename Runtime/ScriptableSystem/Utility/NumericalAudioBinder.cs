@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a numeric variable to an AudioSource's volume and/or pitch.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Numerical Audio Binder")]
+    [AddComponentMenu("ReactiveVars/Binders/Numerical Audio Binder")]
     [RequireComponent(typeof(AudioSource))]
     public class NumericalAudioBinder : NumericalVariableBinder
     {

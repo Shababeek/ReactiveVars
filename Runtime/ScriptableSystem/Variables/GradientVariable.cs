@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Scriptable variable that stores a Gradient with evaluation and manipulation methods.
     /// </summary>
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Variables/GradientVariable")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/GradientVariable")]
     public class GradientVariable : ScriptableVariable<Gradient>
     {
         private void OnEnable()

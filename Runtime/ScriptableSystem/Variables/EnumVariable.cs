@@ -6,7 +6,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Scriptable variable that stores an enum value as an integer with enum manipulation methods.
     /// </summary>
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Variables/EnumVariable")]
+    [CreateAssetMenu(menuName = "ReactiveVars/Variables/EnumVariable")]
     public class EnumVariable : ScriptableVariable<int>
     {
         [Tooltip("The name of the enum type this variable represents.")]

@@ -6,7 +6,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Samples a color from a gradient based on a numeric variable and applies it to a target.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Gradient Sampler Binder")]
+    [AddComponentMenu("ReactiveVars/Binders/Gradient Sampler Binder")]
     public class GradientSamplerBinder : NumericalVariableBinder
     {
         [SerializeField] private ScriptableVariable variable;

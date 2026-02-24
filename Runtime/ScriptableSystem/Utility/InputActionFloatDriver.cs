@@ -7,10 +7,13 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Reads a float value from an InputAction each frame and writes it to a FloatVariable.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Drivers/Input Action Float Driver")]
+    [AddComponentMenu("ReactiveVars/Drivers/Input Action Float Driver")]
     public class InputActionFloatDriver : VariableDriver<FloatVariable>
     {
+        [Tooltip("The FloatVariable to receive the input value.")]
         [SerializeField] private FloatVariable variable;
+
+        [Tooltip("The InputAction to read float values from.")]
         [SerializeField] private InputActionReference inputAction;
 
         protected override FloatVariable Variable => variable;

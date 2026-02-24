@@ -8,10 +8,13 @@ namespace Shababeek.ReactiveVars
     /// Reads button press state from an InputAction and writes it to a BoolVariable.
     /// Sets true on performed, false on canceled.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Drivers/Input Action Button Driver")]
+    [AddComponentMenu("ReactiveVars/Drivers/Input Action Button Driver")]
     public class InputActionButtonDriver : VariableDriver<BoolVariable>
     {
+        [Tooltip("The BoolVariable to set on button press/release.")]
         [SerializeField] private BoolVariable variable;
+
+        [Tooltip("The InputAction to listen for button events.")]
         [SerializeField] private InputActionReference inputAction;
 
         protected override BoolVariable Variable => variable;

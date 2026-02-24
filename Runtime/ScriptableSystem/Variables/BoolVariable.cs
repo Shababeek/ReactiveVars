@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Scriptable variable that stores a boolean value with logical operator support.
     /// </summary>
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Variables/BoolVariable")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/BoolVariable")]
     public class BoolVariable : ScriptableVariable<bool>
     {
         /// <summary>

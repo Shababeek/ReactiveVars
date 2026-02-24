@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a BoolVariable to a CanvasGroup's visibility with optional smooth fade.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Bool CanvasGroup Binder")]
+    [AddComponentMenu("ReactiveVars/Binders/Bool CanvasGroup Binder")]
     [RequireComponent(typeof(CanvasGroup))]
     public class BoolCanvasGroupBinder : VariableBinder<BoolVariable>
     {

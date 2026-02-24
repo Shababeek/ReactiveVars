@@ -7,7 +7,7 @@ namespace Shababeek.ReactiveVars
     /// Binds numeric and color variables to a Light component's properties.
     /// Control intensity, color, range, spot angle, and more through variables.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Binders/Light Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Binders/Light Binder")]
     [RequireComponent(typeof(Light))]
     public class LightBinder : MonoBehaviour
     {

@@ -6,7 +6,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds any numeric variable (IntVariable or FloatVariable) to a UI Image's fill amount.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Numerical Fill Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Numerical Fill Binder")]
     [RequireComponent(typeof(Image))]
     public class NumericalFillBinder : NumericalVariableBinder
     {

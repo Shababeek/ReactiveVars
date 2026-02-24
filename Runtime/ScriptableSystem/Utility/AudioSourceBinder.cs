@@ -6,7 +6,7 @@ namespace Shababeek.ReactiveVars
     /// Binds an AudioVariable to an AudioSource component for configuration.
     /// </summary>
     [RequireComponent(typeof(AudioSource))]
-    [AddComponentMenu(menuName: "Shababeek/Scriptable System/Audio Source Binder")]
+    [AddComponentMenu(menuName: "Shababeek/ReactiveVars/Binders/Audio Source Binder")]
     public class AudioSourceBinder : MonoBehaviour
     {
         [Tooltip("The AudioVariable to bind to the AudioSource.")]

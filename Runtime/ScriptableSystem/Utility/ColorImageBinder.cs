@@ -6,7 +6,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a ColorVariable to a UI Image's color for live updates.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Color Image Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Color Image Binder")]
     [RequireComponent(typeof(Image))]
     public class ColorImageBinder : VariableBinder<ColorVariable>
     {

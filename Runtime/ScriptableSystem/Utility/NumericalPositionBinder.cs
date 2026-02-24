@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Moves object between two positions based on a numerical variable (0-1 or custom range).
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Numerical Position Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Numerical Position Binder")]
     public class NumericalPositionBinder : NumericalVariableBinder
     {
         [SerializeField] private ScriptableVariable variable;

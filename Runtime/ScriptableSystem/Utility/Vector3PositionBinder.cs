@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a Vector3Variable directly to a transform's position.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Vector3 Position Binder")]
+    [AddComponentMenu("ReactiveVars/Binders/Vector3 Position Binder")]
     public class Vector3PositionBinder : VariableBinder<Vector3Variable>
     {
         [SerializeField] private Vector3Variable variable;

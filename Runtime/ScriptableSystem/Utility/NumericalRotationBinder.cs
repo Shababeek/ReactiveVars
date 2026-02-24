@@ -22,7 +22,7 @@ namespace Shababeek.ReactiveVars
     /// // Clock hand: IntVariable hours (0-12) maps to rotation (0-360 degrees)
     /// </code>
     /// </example>
-    [AddComponentMenu("Shababeek/Scriptable System/Numerical Rotation Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Numerical Rotation Binder")]
     public class NumericalRotationBinder : NumericalVariableBinder
     {
         [Tooltip("The numeric variable to bind (IntVariable or FloatVariable).")]

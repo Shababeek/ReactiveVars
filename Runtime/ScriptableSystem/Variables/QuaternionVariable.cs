@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Scriptable variable that stores a Quaternion value with rotation manipulation methods.
     /// </summary>
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Variables/QuaternionVariable")]
+    [CreateAssetMenu(menuName = "ReactiveVars/Variables/QuaternionVariable")]
     public class QuaternionVariable : ScriptableVariable<Quaternion>
     {
         /// <summary>

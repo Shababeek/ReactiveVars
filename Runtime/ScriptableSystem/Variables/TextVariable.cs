@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Scriptable variable that stores a string value with string operator support.
     /// </summary>
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Variables/TextVariable")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/TextVariable")]
     public class TextVariable : ScriptableVariable<string>
     {
         // Equality operators

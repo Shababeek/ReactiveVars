@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a ColorVariable to a LineRenderer's start and/or end color.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Color LineRenderer Binder")]
+    [AddComponentMenu("ReactiveVars/Binders/Color LineRenderer Binder")]
     [RequireComponent(typeof(LineRenderer))]
     public class ColorLineRendererBinder : VariableBinder<ColorVariable>
     {

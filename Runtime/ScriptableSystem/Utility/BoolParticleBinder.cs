@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a BoolVariable to start/stop ParticleSystem emission.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Bool Particle Binder")]
+    [AddComponentMenu("ReactiveVars/Binders/Bool Particle Binder")]
     [RequireComponent(typeof(ParticleSystem))]
     public class BoolParticleBinder : VariableBinder<BoolVariable>
     {

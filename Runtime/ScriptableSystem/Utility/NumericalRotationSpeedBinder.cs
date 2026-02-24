@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds any numeric variable to continuous rotation speed.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Numerical Rotation Speed Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Numerical Rotation Speed Binder")]
     public class NumericalRotationSpeedBinder : NumericalVariableBinder
     {
         [Tooltip("The numeric variable to bind (IntVariable or FloatVariable).")]

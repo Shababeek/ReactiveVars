@@ -7,7 +7,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Populates a TMP_Dropdown's options from a StringListVariable.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/StringList Dropdown Binder")]
+    [AddComponentMenu("ReactiveVars/Binders/StringList Dropdown Binder")]
     [RequireComponent(typeof(TMP_Dropdown))]
     public class StringListDropdownBinder : VariableBinder<StringListVariable>
     {

@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds an IntVariable to an object's rotation for live updates.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Int Variable Rotation Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Int Variable Rotation Binder")]
     public class IntVariableRotationBinder : VariableBinder<IntVariable>
     {
         [Tooltip("The IntVariable to bind to the rotation.")]

@@ -14,7 +14,7 @@ namespace Shababeek.ReactiveVars
     /// - Controlling animation states from variables
     /// - Playing animations when interactables are used
     /// </remarks>
-    [AddComponentMenu("Shababeek/Scriptable System/Event Animator Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Event Animator Binder")]
     public class EventAnimatorBinder : MonoBehaviour
     {
         [Tooltip("The Animator component. Uses this object's Animator if not set.")]

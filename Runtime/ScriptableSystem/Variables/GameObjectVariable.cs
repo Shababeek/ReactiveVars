@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Scriptable variable that stores a GameObject reference with helper methods.
     /// </summary>
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Variables/GameObjectVariable")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/GameObjectVariable")]
     public class GameObjectVariable : ScriptableVariable<GameObject>
     {
         /// <summary>

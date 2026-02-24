@@ -7,7 +7,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a numeric variable to a UI Slider with configurable binding direction.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Slider Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Slider Binder")]
     [RequireComponent(typeof(Slider))]
     public class SliderBinder : MonoBehaviour
     {

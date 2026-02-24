@@ -6,7 +6,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a ColorVariable to TextMeshPro text color.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Color TextMeshPro Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Color TextMeshPro Binder")]
     public class ColorTextMeshProBinder : VariableBinder<ColorVariable>
     {
         [Tooltip("The ColorVariable to bind.")]

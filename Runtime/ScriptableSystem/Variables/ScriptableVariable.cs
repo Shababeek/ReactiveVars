@@ -24,7 +24,7 @@ namespace Shababeek.ReactiveVars
     /// floatVar.Value = 42f;
     /// </code>
     /// </example>
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Variables/ScriptableVariable")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/ScriptableVariable")]
     [Serializable]
     public class ScriptableVariable<T> : ScriptableVariable, IObservable<T>
     {
@@ -172,7 +172,6 @@ namespace Shababeek.ReactiveVars
     /// </remarks>
     public abstract class ScriptableVariable : GameEvent
     {
-        //TODO: remove this class, I already figured out another workaround for the editor issue
         /// <summary>
         /// Returns a string representation of the variable's value.
         /// </summary>

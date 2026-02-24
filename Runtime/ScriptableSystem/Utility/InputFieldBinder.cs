@@ -6,7 +6,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a TextVariable to a TMP_InputField with two-way synchronization.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/InputField Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/InputField Binder")]
     [RequireComponent(typeof(TMP_InputField))]
     public class InputFieldBinder : TwoWayVariableBinder<TextVariable>
     {

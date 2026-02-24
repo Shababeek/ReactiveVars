@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a numeric variable to ParticleSystem properties like emission rate, speed, or size.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Numerical Particle Binder")]
+    [AddComponentMenu("ReactiveVars/Binders/Numerical Particle Binder")]
     [RequireComponent(typeof(ParticleSystem))]
     public class NumericalParticleBinder : NumericalVariableBinder
     {

@@ -28,7 +28,6 @@ namespace Shababeek.ReactiveVars
     [Serializable]
     public abstract class GameEvent<T> : GameEvent
     {
-        //TODO: seperate GameEvent<T> from GameEvent cause it's adding unnecessary complexity
         private new readonly Subject<T> _onRaised = new();
         
         /// <summary>
@@ -103,7 +102,7 @@ namespace Shababeek.ReactiveVars
     /// event.Raise();
     /// </code>
     /// </example>
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Events/GameEvent")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Events/GameEvent")]
     public class GameEvent : ScriptableObject
     {
         [Header("Event Configuration")]

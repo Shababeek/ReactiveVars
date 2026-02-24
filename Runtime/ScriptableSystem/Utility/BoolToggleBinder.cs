@@ -16,7 +16,7 @@ namespace Shababeek.ReactiveVars
     /// - Showing/hiding objects based on state
     /// - Activating effects when conditions are met
     /// </remarks>
-    [AddComponentMenu("Shababeek/Scriptable System/Bool Toggle Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Bool Toggle Binder")]
     public class BoolToggleBinder : VariableBinder<BoolVariable>
     {
         [Tooltip("The bool variable to bind.")]

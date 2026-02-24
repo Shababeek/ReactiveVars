@@ -20,7 +20,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds variables to Rigidbody2D velocity/forces.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Rigidbody 2D Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Rigidbody 2D Binder")]
     public class Rigidbody2DBinder : MonoBehaviour
     {
         [Header("Target")]

@@ -16,7 +16,7 @@ namespace Shababeek.ReactiveVars
     ///
     /// This provides a more direct variable-to-parameter binding compared to EventAnimatorBinder.
     /// </remarks>
-    [AddComponentMenu("Shababeek/Scriptable System/Binders/Animator Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Binders/Animator Binder")]
     public class AnimatorBinder : MonoBehaviour
     {
         [Tooltip("The Animator component. Uses this object's Animator if not set.")]

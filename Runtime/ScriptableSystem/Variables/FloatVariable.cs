@@ -6,7 +6,7 @@ namespace Shababeek.ReactiveVars
     /// Scriptable variable that stores a float value with full arithmetic operator support.
     /// </summary>
 
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Variables/FloatVariable")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/FloatVariable")]
     public class FloatVariable : NumericalVariable<float>
     {
         #region INumericalVariable Implementation

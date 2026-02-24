@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Scriptable variable that stores an AudioClip with playback helper methods.
     /// </summary>
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Variables/AudioClipVariable")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/AudioClipVariable")]
     public class AudioClipVariable : ScriptableVariable<AudioClip>
     {
         /// <summary>

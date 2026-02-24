@@ -6,7 +6,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Unified binder for transform properties: position, rotation, and scale.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Transform Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Transform Binder")]
     public class TransformBinder : MonoBehaviour
     {
         [Header("Position")]

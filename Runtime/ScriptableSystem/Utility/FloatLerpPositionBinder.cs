@@ -13,7 +13,7 @@ namespace Shababeek.ReactiveVars
     /// Moves an object between two positions based on a float value (0-1).
     /// Supports direct, velocity-based, and smooth interpolation modes.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Float Lerp Position Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Float Lerp Position Binder")]
     public class FloatLerpPositionBinder : VariableBinder<FloatVariable>
     {
         [Header("Input")]

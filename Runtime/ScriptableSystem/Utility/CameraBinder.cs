@@ -7,7 +7,7 @@ namespace Shababeek.ReactiveVars
     /// Binds ScriptableVariables to Camera component properties.
     /// Control field of view, near/far clip planes, background color, and more through variables.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Binders/Camera Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Binders/Camera Binder")]
     [RequireComponent(typeof(Camera))]
     public class CameraBinder : MonoBehaviour
     {

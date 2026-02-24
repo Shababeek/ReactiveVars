@@ -6,7 +6,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a FloatVariable to a ScrollRect's normalized scroll position with two-way synchronization.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/ScrollRect Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/ScrollRect Binder")]
     [RequireComponent(typeof(ScrollRect))]
     public class ScrollRectBinder : TwoWayVariableBinder<FloatVariable>
     {

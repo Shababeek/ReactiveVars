@@ -9,7 +9,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Container that holds multiple named ScriptableVariables and GameEvents as sub-assets.
     /// </summary>
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Variable Container")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variable Container")]
     public class VariableContainer : ScriptableObject
     {
         [SerializeField] private List<ScriptableVariable> variables = new();

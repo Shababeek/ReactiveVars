@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds a QuaternionVariable to a transform's rotation.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Quaternion Rotation Binder")]
+    [AddComponentMenu("ReactiveVars/Binders/Quaternion Rotation Binder")]
     public class QuaternionRotationBinder : VariableBinder<QuaternionVariable>
     {
         [SerializeField] private QuaternionVariable variable;

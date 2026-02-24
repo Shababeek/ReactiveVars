@@ -19,7 +19,7 @@ namespace Shababeek.ReactiveVars
     /// Maps a Vector2 input to object movement within bounded space (rectangle or circle).
     /// Useful for joystick-to-cursor or joystick-to-object mapping.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Vector2 Space Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Vector2 Space Binder")]
     public class Vector2SpaceBinder : VariableBinder<Vector2Variable>
     {
         [Header("Input")]

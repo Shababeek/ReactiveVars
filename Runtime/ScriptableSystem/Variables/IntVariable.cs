@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Scriptable variable that stores an integer value with full arithmetic operator support.
     /// </summary>
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Variables/IntVariable")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/IntVariable")]
     public class IntVariable : NumericalVariable<int>
     {
         #region INumericalVariable Implementation

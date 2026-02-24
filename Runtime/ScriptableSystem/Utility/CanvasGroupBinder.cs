@@ -7,7 +7,7 @@ namespace Shababeek.ReactiveVars
     /// Binds numeric and bool variables to a CanvasGroup's properties.
     /// Control alpha, interactability, and blocking raycasts through variables.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Binders/Canvas Group Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Binders/Canvas Group Binder")]
     [RequireComponent(typeof(CanvasGroup))]
     public class CanvasGroupBinder : MonoBehaviour
     {

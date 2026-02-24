@@ -7,7 +7,7 @@ namespace Shababeek.ReactiveVars
     /// Binds an IntVariable to an Image's fill amount for live updates.
     /// Perfect for health bars, progress bars, stamina bars, etc.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Image Filled Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Image Filled Binder")]
     [RequireComponent(typeof(Image))]
     public class ImageFilledBinder : VariableBinder<IntVariable>
     {

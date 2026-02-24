@@ -15,7 +15,7 @@ namespace Shababeek.ReactiveVars
     /// that can be connected to other systems in the scene. It supports multiple GameEvents
     /// with their associated Unity events.
     /// </remarks>
-    [AddComponentMenu("Shababeek/Scriptable System/Game Event Listener")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Game Event Listener")]
     public class GameEventListener : MonoBehaviour
     {
         [Tooltip("List of game events to listen to with their associated Unity events.")]

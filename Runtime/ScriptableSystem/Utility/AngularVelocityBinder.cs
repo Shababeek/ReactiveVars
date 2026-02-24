@@ -14,7 +14,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Binds variables to Rigidbody angular velocity or applies as torque.
     /// </summary>
-    [AddComponentMenu("Shababeek/Scriptable System/Angular Velocity Binder")]
+    [AddComponentMenu("Shababeek/ReactiveVars/Binders/Angular Velocity Binder")]
     public class AngularVelocityBinder : MonoBehaviour
     {
         [Header("Target")]

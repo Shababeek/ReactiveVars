@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Scriptable variable that stores a Color value with color manipulation methods.
     /// </summary>
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Variables/ColorVariable")]
+    [CreateAssetMenu(menuName = "ReactiveVars/Variables/ColorVariable")]
     public class ColorVariable : ScriptableVariable<Color>
     {
         /// <summary>

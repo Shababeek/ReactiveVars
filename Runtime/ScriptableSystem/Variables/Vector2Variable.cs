@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Shababeek.ReactiveVars
 {
-    [CreateAssetMenu(menuName = "Shababeek/Scriptable System/Variables/Vector2Variable")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/Vector2Variable")]
     public class Vector2Variable : ScriptableVariable<Vector2>
     {
         public static bool operator ==(Vector2Variable a, Vector2Variable b)

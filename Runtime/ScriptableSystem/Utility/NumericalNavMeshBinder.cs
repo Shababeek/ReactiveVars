@@ -7,7 +7,7 @@ namespace Shababeek.ReactiveVars
     /// Binds a numeric variable to a NavMeshAgent's speed or stopping distance.
     /// </summary>
     /// <remarks>Requires the AI Navigation module.</remarks>
-    [AddComponentMenu("Shababeek/Scriptable System/Numerical NavMesh Binder")]
+    [AddComponentMenu("ReactiveVars/Binders/Numerical NavMesh Binder")]
     [RequireComponent(typeof(NavMeshAgent))]
     public class NumericalNavMeshBinder : NumericalVariableBinder
     {
