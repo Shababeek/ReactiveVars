@@ -1,4 +1,3 @@
-using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -18,7 +17,7 @@ namespace Shababeek.ReactiveVars
     /// - Activating effects when conditions are met
     /// </remarks>
     [AddComponentMenu("Shababeek/Scriptable System/Bool Toggle Binder")]
-    public class BoolToggleBinder : MonoBehaviour
+    public class BoolToggleBinder : VariableBinder<BoolVariable>
     {
         [Tooltip("The bool variable to bind.")]
         [SerializeField] private BoolVariable variable;
@@ -53,35 +52,19 @@ namespace Shababeek.ReactiveVars
         [Tooltip("Called whenever the value changes. Parameter is the new value (after invert).")]
         [SerializeField] private UnityEvent<bool> onValueChanged;
 
-        private CompositeDisposable _disposable;
         private bool _lastValue;
 
-        private void OnEnable()
+        protected override BoolVariable Variable => variable;
+
+        protected override void Bind()
         {
-            _disposable = new CompositeDisposable();
-
-            if (variable == null)
-            {
-                Debug.LogWarning($"BoolVariable is not assigned on {gameObject.name}", this);
-                return;
-            }
-
             if (setOnEnable)
             {
                 ApplyValue(GetEffectiveValue());
             }
-
-            variable.OnRaised
-                .Subscribe(_ => OnValueRaised())
-                .AddTo(_disposable);
         }
 
-        private void OnDisable()
-        {
-            _disposable?.Dispose();
-        }
-
-        private void OnValueRaised()
+        protected override void OnVariableChanged()
         {
             bool effectiveValue = GetEffectiveValue();
 
@@ -101,7 +84,6 @@ namespace Shababeek.ReactiveVars
         {
             _lastValue = value;
 
-            // Toggle GameObjects
             if (objectsToToggle != null)
             {
                 foreach (var obj in objectsToToggle)
@@ -111,7 +93,6 @@ namespace Shababeek.ReactiveVars
                 }
             }
 
-            // Toggle Behaviours
             if (behavioursToToggle != null)
             {
                 foreach (var behaviour in behavioursToToggle)
@@ -121,7 +102,6 @@ namespace Shababeek.ReactiveVars
                 }
             }
 
-            // Toggle Colliders
             if (collidersToToggle != null)
             {
                 foreach (var col in collidersToToggle)
@@ -131,7 +111,6 @@ namespace Shababeek.ReactiveVars
                 }
             }
 
-            // Toggle Renderers
             if (renderersToToggle != null)
             {
                 foreach (var rend in renderersToToggle)
@@ -141,7 +120,6 @@ namespace Shababeek.ReactiveVars
                 }
             }
 
-            // Fire events
             onValueChanged?.Invoke(value);
 
             if (value)
@@ -150,25 +128,19 @@ namespace Shababeek.ReactiveVars
                 onFalse?.Invoke();
         }
 
-        /// <summary>
-        /// Manually sets the toggle state (ignoring the variable).
-        /// </summary>
+        /// <summary>Manually sets the toggle state (ignoring the variable).</summary>
         public void SetState(bool state)
         {
             ApplyValue(state);
         }
 
-        /// <summary>
-        /// Toggles the current state.
-        /// </summary>
+        /// <summary>Toggles the current state.</summary>
         public void Toggle()
         {
             ApplyValue(!_lastValue);
         }
 
-        /// <summary>
-        /// Forces a refresh from the current variable value.
-        /// </summary>
+        /// <summary>Forces a refresh from the current variable value.</summary>
         public void Refresh()
         {
             if (variable != null)

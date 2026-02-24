@@ -1,4 +1,3 @@
-using UniRx;
 using UnityEngine;
 
 namespace Shababeek.ReactiveVars
@@ -24,7 +23,7 @@ namespace Shababeek.ReactiveVars
     /// </code>
     /// </example>
     [AddComponentMenu("Shababeek/Scriptable System/Numerical Rotation Binder")]
-    public class NumericalRotationBinder : MonoBehaviour
+    public class NumericalRotationBinder : NumericalVariableBinder
     {
         [Tooltip("The numeric variable to bind (IntVariable or FloatVariable).")]
         [SerializeField] private ScriptableVariable variable;
@@ -59,37 +58,20 @@ namespace Shababeek.ReactiveVars
         [Tooltip("Use shortest path for angle interpolation (recommended for dials).")]
         [SerializeField] private bool useShortestPath = true;
 
-        private CompositeDisposable _disposable;
         private float _targetAngle;
         private float _currentAngle;
-        private INumericalVariable _numericalVariable;
 
-        private void OnEnable()
+        protected override ScriptableVariable Variable => variable;
+
+        protected override void BindNumerical()
         {
-            _disposable = new CompositeDisposable();
-
-            if (variable == null)
-            {
-                Debug.LogWarning($"Variable is not assigned on {gameObject.name}", this);
-                return;
-            }
-
-            // Check if it's a numerical variable
-            _numericalVariable = variable as INumericalVariable;
-            if (_numericalVariable == null)
-            {
-                Debug.LogWarning($"Variable on {gameObject.name} is not a numerical variable (IntVariable or FloatVariable)", this);
-                return;
-            }
-
-            // Initialize rotation
             _currentAngle = GetCurrentRotation();
-            UpdateRotation(_numericalVariable.AsFloat);
+            UpdateRotation(NumericalVariable.AsFloat);
+        }
 
-            // Subscribe to value changes
-            variable.OnRaised
-                .Subscribe(_ => UpdateRotation(_numericalVariable.AsFloat))
-                .AddTo(_disposable);
+        protected override void OnNumericalValueChanged()
+        {
+            UpdateRotation(NumericalVariable.AsFloat);
         }
 
         private void Update()
@@ -110,10 +92,8 @@ namespace Shababeek.ReactiveVars
 
         private void UpdateRotation(float value)
         {
-            // Clamp value to range
             float clampedValue = Mathf.Clamp(value, minValue, maxValue);
 
-            // Map value to angle
             float t = Mathf.Approximately(maxValue, minValue)
                 ? 0f
                 : (clampedValue - minValue) / (maxValue - minValue);
@@ -172,15 +152,7 @@ namespace Shababeek.ReactiveVars
             return useLocalRotation ? transform.localEulerAngles : transform.eulerAngles;
         }
 
-        private void OnDisable()
-        {
-            _disposable?.Dispose();
-        }
-
-        /// <summary>
-        /// Sets the rotation immediately without interpolation.
-        /// </summary>
-        /// <param name="angle">The angle in degrees</param>
+        /// <summary>Sets the rotation immediately without interpolation.</summary>
         public void SetRotationImmediate(float angle)
         {
             _targetAngle = angle;
@@ -188,30 +160,22 @@ namespace Shababeek.ReactiveVars
             ApplyRotation(angle);
         }
 
-        /// <summary>
-        /// Gets the current rotation angle.
-        /// </summary>
+        /// <summary>Gets the current rotation angle.</summary>
         public float CurrentAngle => _currentAngle;
 
-        /// <summary>
-        /// Gets the target rotation angle.
-        /// </summary>
+        /// <summary>Gets the target rotation angle.</summary>
         public float TargetAngle => _targetAngle;
 
-        /// <summary>
-        /// Recalculates the rotation based on the current variable value.
-        /// </summary>
+        /// <summary>Recalculates the rotation based on the current variable value.</summary>
         public void Refresh()
         {
-            if (_numericalVariable != null)
+            if (NumericalVariable != null)
             {
-                UpdateRotation(_numericalVariable.AsFloat);
+                UpdateRotation(NumericalVariable.AsFloat);
             }
         }
 
-        /// <summary>
-        /// Defines which axis to rotate around.
-        /// </summary>
+        /// <summary>Defines which axis to rotate around.</summary>
         public enum RotationAxis
         {
             X,

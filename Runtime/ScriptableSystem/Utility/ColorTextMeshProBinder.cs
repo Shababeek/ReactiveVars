@@ -1,5 +1,4 @@
 using TMPro;
-using UniRx;
 using UnityEngine;
 
 namespace Shababeek.ReactiveVars
@@ -8,33 +7,40 @@ namespace Shababeek.ReactiveVars
     /// Binds a ColorVariable to TextMeshPro text color.
     /// </summary>
     [AddComponentMenu("Shababeek/Scriptable System/Color TextMeshPro Binder")]
-    public class ColorTextMeshProBinder : MonoBehaviour
+    public class ColorTextMeshProBinder : VariableBinder<ColorVariable>
     {
+        [Tooltip("The ColorVariable to bind.")]
         [SerializeField] private ColorVariable colorVariable;
+
+        [Tooltip("The TMP_Text component to update. Uses this object's component if not set.")]
         [SerializeField] private TMP_Text textComponent;
 
         [Header("Settings")]
+        [Tooltip("Whether to smoothly interpolate color changes.")]
         [SerializeField] private bool smooth;
+
+        [Tooltip("Color interpolation speed.")]
         [SerializeField] private float speed = 5f;
+
+        [Tooltip("Whether to include alpha channel in color changes.")]
         [SerializeField] private bool includeAlpha = true;
 
-        private CompositeDisposable _disposable;
         private Color _targetColor;
 
-        private void OnEnable()
+        protected override ColorVariable Variable => colorVariable;
+
+        protected override void Bind()
         {
-            _disposable = new CompositeDisposable();
-
             if (textComponent == null) textComponent = GetComponent<TMP_Text>();
-            if (colorVariable == null || textComponent == null) return;
-
             _targetColor = colorVariable.Value;
             ApplyColor(_targetColor);
-
-            colorVariable.OnValueChanged.Subscribe(UpdateColor).AddTo(_disposable);
         }
 
-        private void OnDisable() => _disposable?.Dispose();
+        protected override void OnVariableChanged()
+        {
+            _targetColor = colorVariable.Value;
+            if (!smooth) ApplyColor(_targetColor);
+        }
 
         private void Update()
         {
@@ -44,12 +50,6 @@ namespace Shababeek.ReactiveVars
             var next = Color.Lerp(current, _targetColor, speed * Time.deltaTime);
             if (!includeAlpha) next.a = current.a;
             textComponent.color = next;
-        }
-
-        private void UpdateColor(Color color)
-        {
-            _targetColor = color;
-            if (!smooth) ApplyColor(color);
         }
 
         private void ApplyColor(Color color)

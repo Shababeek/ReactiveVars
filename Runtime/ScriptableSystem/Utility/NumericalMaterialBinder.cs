@@ -1,4 +1,3 @@
-using UniRx;
 using UnityEngine;
 
 namespace Shababeek.ReactiveVars
@@ -17,7 +16,7 @@ namespace Shababeek.ReactiveVars
     /// - Fill amount shaders
     /// </remarks>
     [AddComponentMenu("Shababeek/Scriptable System/Numerical Material Binder")]
-    public class NumericalMaterialBinder : MonoBehaviour
+    public class NumericalMaterialBinder : NumericalVariableBinder
     {
         [Tooltip("The numeric variable to bind (IntVariable or FloatVariable).")]
         [SerializeField] private ScriptableVariable variable;
@@ -74,34 +73,17 @@ namespace Shababeek.ReactiveVars
         [Tooltip("Interpolation speed.")]
         [SerializeField] private float smoothSpeed = 5f;
 
-        private CompositeDisposable _disposable;
         private Material _material;
         private int _propertyId;
-        private INumericalVariable _numericalVariable;
 
-        // Current/target values for smooth interpolation
         private float _currentFloat, _targetFloat;
         private Color _currentColor, _targetColor;
         private Vector4 _currentVector, _targetVector;
 
-        private void OnEnable()
+        protected override ScriptableVariable Variable => variable;
+
+        protected override void BindNumerical()
         {
-            _disposable = new CompositeDisposable();
-
-            if (variable == null)
-            {
-                Debug.LogWarning($"Variable is not assigned on {gameObject.name}", this);
-                return;
-            }
-
-            _numericalVariable = variable as INumericalVariable;
-            if (_numericalVariable == null)
-            {
-                Debug.LogWarning($"Variable on {gameObject.name} is not a numerical variable", this);
-                return;
-            }
-
-            // Get renderer
             if (targetRenderer == null)
                 targetRenderer = GetComponent<Renderer>();
 
@@ -111,7 +93,6 @@ namespace Shababeek.ReactiveVars
                 return;
             }
 
-            // Get material
             if (useSharedMaterial)
             {
                 var mats = targetRenderer.sharedMaterials;
@@ -131,24 +112,14 @@ namespace Shababeek.ReactiveVars
                 return;
             }
 
-            // Cache property ID
             _propertyId = Shader.PropertyToID(propertyName);
-
-            // Initialize current values
             InitializeCurrentValues();
-
-            // Set initial value
-            UpdateProperty(_numericalVariable.AsFloat);
-
-            // Subscribe to changes
-            variable.OnRaised
-                .Subscribe(_ => UpdateProperty(_numericalVariable.AsFloat))
-                .AddTo(_disposable);
+            UpdateProperty(NumericalVariable.AsFloat);
         }
 
-        private void OnDisable()
+        protected override void OnNumericalValueChanged()
         {
-            _disposable?.Dispose();
+            UpdateProperty(NumericalVariable.AsFloat);
         }
 
         private void Update()
@@ -234,6 +205,7 @@ namespace Shababeek.ReactiveVars
             }
         }
 
+        /// <summary>Defines the type of shader property to modify.</summary>
         public enum PropertyType
         {
             Float,

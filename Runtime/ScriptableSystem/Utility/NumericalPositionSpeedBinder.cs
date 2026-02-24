@@ -1,4 +1,3 @@
-using UniRx;
 using UnityEngine;
 
 namespace Shababeek.ReactiveVars
@@ -18,7 +17,7 @@ namespace Shababeek.ReactiveVars
     /// - Throttle-controlled movement
     /// </remarks>
     [AddComponentMenu("Shababeek/Scriptable System/Numerical Position Speed Binder")]
-    public class NumericalPositionSpeedBinder : MonoBehaviour
+    public class NumericalPositionSpeedBinder : NumericalVariableBinder
     {
         [Tooltip("The numeric variable to bind (IntVariable or FloatVariable).")]
         [SerializeField] private ScriptableVariable variable;
@@ -56,57 +55,40 @@ namespace Shababeek.ReactiveVars
 
         [Tooltip("Acceleration rate when smoothAcceleration is enabled.")]
         [SerializeField] private float accelerationRate = 10f;
+
         [Tooltip("Avoid Position Control")]
         [SerializeField] private bool _isPaused = false;
 
-        private CompositeDisposable _disposable;
         private float _targetSpeed;
         private float _currentSpeed;
         private float _currentT; // 0 = start, 1 = end
 
-        private INumericalVariable _numericalVariable;
+        protected override ScriptableVariable Variable => variable;
+
+        /// <summary>Pauses position movement.</summary>
         public void Pause() => _isPaused = true;
+
+        /// <summary>Resumes position movement.</summary>
         public void Resume() => _isPaused = false;
+
+        /// <summary>Sets the paused state.</summary>
         public void SetPaused(bool paused) => _isPaused = paused;
-        private void OnEnable()
+
+        protected override void BindNumerical()
         {
-            _disposable = new CompositeDisposable();
-
-            if (variable == null)
-            {
-                Debug.LogWarning($"Variable is not assigned on {gameObject.name}", this);
-                return;
-            }
-
-            _numericalVariable = variable as INumericalVariable;
-            if (_numericalVariable == null)
-            {
-                Debug.LogWarning($"Variable on {gameObject.name} is not a numerical variable (IntVariable or FloatVariable)", this);
-                return;
-            }
-
-            // Initialize position
             _currentT = CalculateCurrentT();
-            UpdateSpeed(_numericalVariable.AsFloat);
-
-            // Subscribe to value changes
-            variable.OnRaised
-                .Subscribe(_ => UpdateSpeed(_numericalVariable.AsFloat))
-                .AddTo(_disposable);
+            UpdateSpeed(NumericalVariable.AsFloat);
         }
 
-        private void OnDisable()
+        protected override void OnNumericalValueChanged()
         {
-            _disposable?.Dispose();
+            UpdateSpeed(NumericalVariable.AsFloat);
         }
 
         private void Update()
         {
-            if (_isPaused)
-            {
-                return;
-            }
-            // Handle smooth acceleration
+            if (_isPaused) return;
+
             if (smoothAcceleration)
             {
                 _currentSpeed = Mathf.MoveTowards(_currentSpeed, _targetSpeed, accelerationRate * Time.deltaTime);
@@ -118,22 +100,18 @@ namespace Shababeek.ReactiveVars
 
             if (Mathf.Approximately(_currentSpeed, 0f)) return;
 
-            // Calculate distance between points
             float totalDistance = Vector3.Distance(startPosition, endPosition);
             if (Mathf.Approximately(totalDistance, 0f)) return;
 
-            // Calculate delta T based on speed
             float deltaT = (_currentSpeed / totalDistance) * Time.deltaTime;
             float newT = _currentT + deltaT;
 
-            // Apply clamping or wrapping
             if (clampToEndpoints)
             {
                 newT = Mathf.Clamp01(newT);
             }
             else
             {
-                // Wrap around
                 newT = Mathf.Repeat(newT, 1f);
             }
 
@@ -143,7 +121,6 @@ namespace Shababeek.ReactiveVars
 
         private void UpdateSpeed(float value)
         {
-            // Map input value to speed
             float center = (minValue + maxValue) / 2f;
             float range = (maxValue - minValue) / 2f;
 
@@ -153,17 +130,14 @@ namespace Shababeek.ReactiveVars
                 return;
             }
 
-            // Normalize to -1 to 1 range
             float normalizedValue = (value - center) / range;
 
-            // Apply dead zone
             if (Mathf.Abs(normalizedValue) < deadZone)
             {
                 _targetSpeed = 0f;
                 return;
             }
 
-            // Clamp and apply speed
             normalizedValue = Mathf.Clamp(normalizedValue, -1f, 1f);
             _targetSpeed = normalizedValue * maxSpeed;
         }
@@ -191,43 +165,29 @@ namespace Shababeek.ReactiveVars
 
         #region Public API
 
-        /// <summary>
-        /// Gets the current movement speed in units per second.
-        /// </summary>
+        /// <summary>Gets the current movement speed in units per second.</summary>
         public float CurrentSpeed => _currentSpeed;
 
-        /// <summary>
-        /// Gets the current position as a value between 0 (start) and 1 (end).
-        /// </summary>
+        /// <summary>Gets the current position as a value between 0 (start) and 1 (end).</summary>
         public float CurrentT => _currentT;
 
-        /// <summary>
-        /// Gets the current world/local position.
-        /// </summary>
+        /// <summary>Gets the current world/local position.</summary>
         public Vector3 CurrentPosition => Vector3.Lerp(startPosition, endPosition, _currentT);
 
-        /// <summary>
-        /// Immediately sets the position to a specific T value (0-1).
-        /// </summary>
+        /// <summary>Immediately sets the position to a specific T value (0-1).</summary>
         public void SetPositionImmediate(float t)
         {
             _currentT = clampToEndpoints ? Mathf.Clamp01(t) : Mathf.Repeat(t, 1f);
             ApplyPosition();
         }
 
-        /// <summary>
-        /// Moves to start position immediately.
-        /// </summary>
+        /// <summary>Moves to start position immediately.</summary>
         public void GoToStart() => SetPositionImmediate(0f);
 
-        /// <summary>
-        /// Moves to end position immediately.
-        /// </summary>
+        /// <summary>Moves to end position immediately.</summary>
         public void GoToEnd() => SetPositionImmediate(1f);
 
-        /// <summary>
-        /// Moves to center position immediately.
-        /// </summary>
+        /// <summary>Moves to center position immediately.</summary>
         public void GoToCenter() => SetPositionImmediate(0.5f);
 
         #endregion

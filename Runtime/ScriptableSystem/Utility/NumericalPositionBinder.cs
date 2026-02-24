@@ -1,4 +1,3 @@
-using UniRx;
 using UnityEngine;
 
 namespace Shababeek.ReactiveVars
@@ -7,7 +6,7 @@ namespace Shababeek.ReactiveVars
     /// Moves object between two positions based on a numerical variable (0-1 or custom range).
     /// </summary>
     [AddComponentMenu("Shababeek/Scriptable System/Numerical Position Binder")]
-    public class NumericalPositionBinder : MonoBehaviour
+    public class NumericalPositionBinder : NumericalVariableBinder
     {
         [SerializeField] private ScriptableVariable variable;
 
@@ -25,23 +24,20 @@ namespace Shababeek.ReactiveVars
         [SerializeField] private float speed = 5f;
         [SerializeField] private AnimationCurve curve = AnimationCurve.Linear(0, 0, 1, 1);
 
-        private CompositeDisposable _disposable;
         private Vector3 _targetPosition;
-        private INumericalVariable _numVar;
 
-        private void OnEnable()
+        protected override ScriptableVariable Variable => variable;
+
+        protected override void BindNumerical()
         {
-            _disposable = new CompositeDisposable();
-
-            if (variable == null) return;
-            _numVar = variable as INumericalVariable;
-            if (_numVar == null) return;
-
-            UpdatePosition(_numVar.AsFloat);
-            variable.OnRaised.Subscribe(_ => UpdatePosition(_numVar.AsFloat)).AddTo(_disposable);
+            _targetPosition = useLocalPosition ? transform.localPosition : transform.position;
+            UpdatePosition(NumericalVariable.AsFloat);
         }
 
-        private void OnDisable() => _disposable?.Dispose();
+        protected override void OnNumericalValueChanged()
+        {
+            UpdatePosition(NumericalVariable.AsFloat);
+        }
 
         private void Update()
         {

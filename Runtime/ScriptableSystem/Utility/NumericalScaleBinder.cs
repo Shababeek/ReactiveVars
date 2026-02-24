@@ -1,4 +1,3 @@
-using UniRx;
 using UnityEngine;
 
 namespace Shababeek.ReactiveVars
@@ -16,7 +15,7 @@ namespace Shababeek.ReactiveVars
     /// - Progress visualization
     /// </remarks>
     [AddComponentMenu("Shababeek/Scriptable System/Numerical Scale Binder")]
-    public class NumericalScaleBinder : MonoBehaviour
+    public class NumericalScaleBinder : NumericalVariableBinder
     {
         [Tooltip("The numeric variable to bind (IntVariable or FloatVariable).")]
         [SerializeField] private ScriptableVariable variable;
@@ -48,39 +47,20 @@ namespace Shababeek.ReactiveVars
         [Tooltip("Animation curve for scale interpolation (optional).")]
         [SerializeField] private AnimationCurve curve = AnimationCurve.Linear(0, 0, 1, 1);
 
-        private CompositeDisposable _disposable;
         private Vector3 _targetScale;
         private Vector3 _currentScale;
-        private INumericalVariable _numericalVariable;
 
-        private void OnEnable()
+        protected override ScriptableVariable Variable => variable;
+
+        protected override void BindNumerical()
         {
-            _disposable = new CompositeDisposable();
-
-            if (variable == null)
-            {
-                Debug.LogWarning($"Variable is not assigned on {gameObject.name}", this);
-                return;
-            }
-
-            _numericalVariable = variable as INumericalVariable;
-            if (_numericalVariable == null)
-            {
-                Debug.LogWarning($"Variable on {gameObject.name} is not a numerical variable", this);
-                return;
-            }
-
             _currentScale = transform.localScale;
-            UpdateScale(_numericalVariable.AsFloat);
-
-            variable.OnRaised
-                .Subscribe(_ => UpdateScale(_numericalVariable.AsFloat))
-                .AddTo(_disposable);
+            UpdateScale(NumericalVariable.AsFloat);
         }
 
-        private void OnDisable()
+        protected override void OnNumericalValueChanged()
         {
-            _disposable?.Dispose();
+            UpdateScale(NumericalVariable.AsFloat);
         }
 
         private void Update()
@@ -130,18 +110,14 @@ namespace Shababeek.ReactiveVars
             }
         }
 
-        /// <summary>
-        /// Sets the current scale from the transform as min scale.
-        /// </summary>
+        /// <summary>Sets the current scale from the transform as min scale.</summary>
         [ContextMenu("Set Min Scale From Current")]
         public void SetMinScaleFromCurrent()
         {
             minScale = transform.localScale;
         }
 
-        /// <summary>
-        /// Sets the current scale from the transform as max scale.
-        /// </summary>
+        /// <summary>Sets the current scale from the transform as max scale.</summary>
         [ContextMenu("Set Max Scale From Current")]
         public void SetMaxScaleFromCurrent()
         {

@@ -55,7 +55,12 @@ namespace Shababeek.ReactiveVars
 
         private void OnEnable()
         {
-            if (rb == null) rb = GetComponent<Rigidbody>();
+            if (!rb) rb = GetComponent<Rigidbody>();
+            if (!rb)
+            {
+                Debug.LogError($"Rigidbody3DBinder on {gameObject.name}: No Rigidbody found.", this);
+                return;
+            }
             _disposable = new CompositeDisposable();
             SubscribeToInputs();
         }

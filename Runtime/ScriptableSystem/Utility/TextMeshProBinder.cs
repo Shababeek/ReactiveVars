@@ -1,5 +1,4 @@
 using System;
-using UniRx;
 using UnityEngine;
 using TMPro;
 
@@ -9,7 +8,7 @@ namespace Shababeek.ReactiveVars
     /// Binds a ScriptableVariable to a UI element for live updates.
     /// </summary>
     [AddComponentMenu(menuName: "Shababeek/Scriptable System/TMPro Variable Binder")]
-    public class TextMeshProBinder : MonoBehaviour
+    public class TextMeshProBinder : VariableBinder<ScriptableVariable>
     {
         [Tooltip("Format string (e.g., 'X' for hex, 'F2' for 2 decimals, 'N0' for thousands separator)")]
         [SerializeField] private string format = "";
@@ -18,7 +17,6 @@ namespace Shababeek.ReactiveVars
         [Tooltip("The TextMeshProUGUI component to update with the variable's value.")]
         private TextMeshProUGUI _textUI;
         private TMP_Text _text3D;
-        private CompositeDisposable _disposable;
 
         private void Awake()
         {
@@ -26,13 +24,18 @@ namespace Shababeek.ReactiveVars
             _text3D = GetComponent<TMP_Text>();
         }
 
-        private void OnEnable()
+        protected override ScriptableVariable Variable => variable;
+
+        protected override void Bind()
         {
-            _disposable = new CompositeDisposable();
-            if(_textUI) _textUI.text = variable.ToString();
-            if(_text3D) _text3D.text = variable.ToString();
-            variable.OnRaised.Do(_ => UpdateText()).Subscribe().AddTo(_disposable);
+            UpdateText();
         }
+
+        protected override void OnVariableChanged()
+        {
+            UpdateText();
+        }
+
         private string FormatValue(object value)
         {
             if (value == null)
@@ -43,17 +46,13 @@ namespace Shababeek.ReactiveVars
 
             return value.ToString();
         }
+
         private void UpdateText()
         {
             string text = FormatValue(variable.GetValue());
 
             if (_textUI) _textUI.text = text;
             if (_text3D) _text3D.text = text;
-        }
-
-        private void OnDisable()
-        {
-            _disposable.Dispose();
         }
     }
 }

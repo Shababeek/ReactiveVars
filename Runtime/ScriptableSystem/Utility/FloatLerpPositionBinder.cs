@@ -1,4 +1,3 @@
-using UniRx;
 using UnityEngine;
 
 namespace Shababeek.ReactiveVars
@@ -15,43 +14,50 @@ namespace Shababeek.ReactiveVars
     /// Supports direct, velocity-based, and smooth interpolation modes.
     /// </summary>
     [AddComponentMenu("Shababeek/Scriptable System/Float Lerp Position Binder")]
-    public class FloatLerpPositionBinder : MonoBehaviour
+    public class FloatLerpPositionBinder : VariableBinder<FloatVariable>
     {
         [Header("Input")]
+        [Tooltip("The FloatVariable to bind (0-1 range).")]
         [SerializeField] private FloatVariable floatInput;
 
         [Header("Target")]
+        [Tooltip("The transform to move. Uses this object's transform if not set.")]
         [SerializeField] private Transform target;
+
+        [Tooltip("Whether to use local space instead of world space.")]
         [SerializeField] private bool useLocalSpace = true;
 
         [Header("Positions")]
+        [Tooltip("The position when value is 0.")]
         [SerializeField] private Vector3 startPosition;
+
+        [Tooltip("The position when value is 1.")]
         [SerializeField] private Vector3 endPosition = Vector3.forward;
 
         [Header("Movement Mode")]
+        [Tooltip("How to interpolate between positions.")]
         [SerializeField] private FloatLerpMode mode = FloatLerpMode.Direct;
+
+        [Tooltip("Movement speed for Velocity mode.")]
         [SerializeField] private float velocitySpeed = 2f;
+
+        [Tooltip("Smooth time for SmoothDamp mode.")]
         [SerializeField] private float smoothTime = 0.1f;
+
+        [Tooltip("Easing curve applied to the position interpolation.")]
         [SerializeField] private AnimationCurve easingCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
-        private CompositeDisposable _disposable;
         private float _currentT;
         private float _targetT;
         private float _velocity;
 
-        private void OnEnable()
+        protected override FloatVariable Variable => floatInput;
+
+        protected override void Bind()
         {
             if (target == null) target = transform;
-            _disposable = new CompositeDisposable();
-
-            if (floatInput != null)
-            {
-                floatInput.OnValueChanged
-                    .Subscribe(OnValueChanged)
-                    .AddTo(_disposable);
-                _currentT = Mathf.Clamp01(floatInput.Value);
-                _targetT = _currentT;
-            }
+            _currentT = Mathf.Clamp01(floatInput.Value);
+            _targetT = _currentT;
 
             if (mode == FloatLerpMode.Direct)
             {
@@ -59,11 +65,9 @@ namespace Shababeek.ReactiveVars
             }
         }
 
-        private void OnDisable() => _disposable?.Dispose();
-
-        private void OnValueChanged(float value)
+        protected override void OnVariableChanged()
         {
-            _targetT = Mathf.Clamp01(value);
+            _targetT = Mathf.Clamp01(floatInput.Value);
 
             if (mode == FloatLerpMode.Direct)
             {
@@ -78,7 +82,6 @@ namespace Shababeek.ReactiveVars
 
             if (mode == FloatLerpMode.Velocity)
             {
-                // Move towards target at fixed speed
                 _currentT = Mathf.MoveTowards(_currentT, _targetT, velocitySpeed * Time.deltaTime);
             }
             else if (mode == FloatLerpMode.SmoothDamp)
@@ -100,18 +103,21 @@ namespace Shababeek.ReactiveVars
                 target.position = position;
         }
 
+        /// <summary>Sets the start position.</summary>
         public void SetStartPosition(Vector3 pos)
         {
             startPosition = pos;
             ApplyPosition(_currentT);
         }
 
+        /// <summary>Sets the end position.</summary>
         public void SetEndPosition(Vector3 pos)
         {
             endPosition = pos;
             ApplyPosition(_currentT);
         }
 
+        /// <summary>Sets both start and end positions.</summary>
         public void SetPositions(Vector3 start, Vector3 end)
         {
             startPosition = start;
@@ -119,6 +125,7 @@ namespace Shababeek.ReactiveVars
             ApplyPosition(_currentT);
         }
 
+        /// <summary>Sets the target T value directly.</summary>
         public void SetValue(float value)
         {
             _targetT = Mathf.Clamp01(value);
@@ -129,6 +136,7 @@ namespace Shababeek.ReactiveVars
             }
         }
 
+        /// <summary>Immediately snaps to the current target position.</summary>
         public void SnapToTarget()
         {
             _currentT = _targetT;
@@ -154,7 +162,6 @@ namespace Shababeek.ReactiveVars
             Gizmos.color = Color.yellow;
             Gizmos.DrawLine(start, end);
 
-            // Draw current position
             if (Application.isPlaying)
             {
                 Vector3 current = Vector3.Lerp(start, end, _currentT);

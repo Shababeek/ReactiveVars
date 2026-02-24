@@ -1,4 +1,3 @@
-using UniRx;
 using UnityEngine;
 
 namespace Shababeek.ReactiveVars
@@ -21,59 +20,66 @@ namespace Shababeek.ReactiveVars
     /// Useful for joystick-to-cursor or joystick-to-object mapping.
     /// </summary>
     [AddComponentMenu("Shababeek/Scriptable System/Vector2 Space Binder")]
-    public class Vector2SpaceBinder : MonoBehaviour
+    public class Vector2SpaceBinder : VariableBinder<Vector2Variable>
     {
         [Header("Input")]
+        [Tooltip("The Vector2Variable to bind.")]
         [SerializeField] private Vector2Variable inputVariable;
 
         [Header("Target")]
+        [Tooltip("The transform to move. Uses this object's transform if not set.")]
         [SerializeField] private Transform target;
+
+        [Tooltip("The center position of the movement space.")]
         [SerializeField] private Vector3 centerPosition;
+
+        [Tooltip("Whether to use local space instead of world space.")]
         [SerializeField] private bool useLocalSpace = true;
 
         [Header("Bounds")]
+        [Tooltip("The shape of the movement bounds.")]
         [SerializeField] private SpaceBoundsType boundsType = SpaceBoundsType.Rectangle;
+
+        [Tooltip("Size of rectangle bounds.")]
         [SerializeField] private Vector2 rectangleSize = new Vector2(1f, 1f);
+
+        [Tooltip("Radius of circle bounds.")]
         [SerializeField] private float circleRadius = 0.5f;
 
         [Header("Mapping Plane")]
+        [Tooltip("Which 2D plane to map the Vector2 input to.")]
         [SerializeField] private Plane2D plane = Plane2D.XY;
 
         [Header("Movement")]
+        [Tooltip("How to apply the input to movement.")]
         [SerializeField] private SpaceMovementMode movementMode = SpaceMovementMode.Direct;
+
+        [Tooltip("Speed multiplier for Velocity mode.")]
         [SerializeField] private float velocityMultiplier = 5f;
+
+        [Tooltip("Smooth time for SmoothDamp mode.")]
         [SerializeField] private float smoothTime = 0.1f;
 
-        private CompositeDisposable _disposable;
         private Vector2 _currentInput;
         private Vector3 _targetPosition;
         private Vector3 _velocity;
 
-        private void OnEnable()
+        protected override Vector2Variable Variable => inputVariable;
+
+        protected override void Bind()
         {
             if (target == null) target = transform;
-            _disposable = new CompositeDisposable();
-
-            if (inputVariable != null)
-            {
-                inputVariable.OnValueChanged
-                    .Subscribe(OnInputChanged)
-                    .AddTo(_disposable);
-                _currentInput = inputVariable.Value;
-            }
-
+            _currentInput = inputVariable.Value;
             _targetPosition = GetTargetPositionFromInput(_currentInput);
         }
 
-        private void OnDisable() => _disposable?.Dispose();
-
-        private void OnInputChanged(Vector2 input)
+        protected override void OnVariableChanged()
         {
-            _currentInput = input;
+            _currentInput = inputVariable.Value;
 
             if (movementMode == SpaceMovementMode.Direct)
             {
-                _targetPosition = GetTargetPositionFromInput(input);
+                _targetPosition = GetTargetPositionFromInput(_currentInput);
                 ApplyPosition(_targetPosition);
             }
         }
@@ -84,15 +90,13 @@ namespace Shababeek.ReactiveVars
 
             if (movementMode == SpaceMovementMode.Velocity)
             {
-                // Input acts as velocity
                 Vector3 delta = InputToWorldDirection(_currentInput) * velocityMultiplier * Time.deltaTime;
                 _targetPosition += delta;
-                _targetPosition = ClampToBoounds(_targetPosition);
+                _targetPosition = ClampToBounds(_targetPosition);
                 ApplyPosition(_targetPosition);
             }
             else if (movementMode == SpaceMovementMode.SmoothDamp)
             {
-                // Smooth interpolation to target
                 _targetPosition = GetTargetPositionFromInput(_currentInput);
                 Vector3 currentPos = GetCurrentPosition();
                 Vector3 newPos = Vector3.SmoothDamp(currentPos, _targetPosition, ref _velocity, smoothTime);
@@ -102,10 +106,7 @@ namespace Shababeek.ReactiveVars
 
         private Vector3 GetTargetPositionFromInput(Vector2 input)
         {
-            // Clamp input to bounds
             Vector2 clampedInput = ClampInputToBounds(input);
-
-            // Map to world position
             return InputToWorldPosition(clampedInput);
         }
 
@@ -161,7 +162,7 @@ namespace Shababeek.ReactiveVars
             };
         }
 
-        private Vector3 ClampToBoounds(Vector3 position)
+        private Vector3 ClampToBounds(Vector3 position)
         {
             Vector3 offset = position - centerPosition;
             Vector2 offset2D = Vector3ToPlane(offset);
@@ -204,11 +205,13 @@ namespace Shababeek.ReactiveVars
             return useLocalSpace ? target.localPosition : target.position;
         }
 
+        /// <summary>Sets the center position of the movement space.</summary>
         public void SetCenter(Vector3 center)
         {
             centerPosition = center;
         }
 
+        /// <summary>Resets the object to the center position.</summary>
         public void ResetToCenter()
         {
             ApplyPosition(centerPosition);
@@ -252,6 +255,7 @@ namespace Shababeek.ReactiveVars
             }
         }
 
+        /// <summary>Defines the 2D plane for mapping Vector2 input to 3D space.</summary>
         public enum Plane2D { XY, XZ, YZ }
     }
 }
