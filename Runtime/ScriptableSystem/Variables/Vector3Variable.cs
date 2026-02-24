@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Scriptable variable that stores a Vector3 value with full arithmetic operator support.
     /// </summary>
-    [CreateAssetMenu(menuName = "ReactiveVars/Variables/Vector3Variable")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/Vector3Variable")]
     public class Vector3Variable : ScriptableVariable<Vector3>
     {
         // Equality operators

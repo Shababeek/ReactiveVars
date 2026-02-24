@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Scriptable variable that stores a Transform reference with transform manipulation methods.
     /// </summary>
-    [CreateAssetMenu(menuName = "ReactiveVars/Variables/TransformVariable")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/TransformVariable")]
     public class TransformVariable : ScriptableVariable<Transform>
     {
         /// <summary>

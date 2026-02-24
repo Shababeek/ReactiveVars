@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Scriptable variable that stores an AnimationCurve with evaluation and manipulation methods.
     /// </summary>
-    [CreateAssetMenu(menuName = "ReactiveVars/Variables/AnimationCurveVariable")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/AnimationCurveVariable")]
     public class AnimationCurveVariable : ScriptableVariable<AnimationCurve>
     {
         [Tooltip("When enabled, the curve will loop by wrapping time values within the curve length.")]

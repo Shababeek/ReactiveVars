@@ -5,7 +5,7 @@ namespace Shababeek.ReactiveVars
     /// <summary>
     /// Scriptable variable that stores a LayerMask with layer manipulation methods.
     /// </summary>
-    [CreateAssetMenu(menuName = "ReactiveVars/Variables/LayerMaskVariable")]
+    [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/LayerMaskVariable")]
     public class LayerMaskVariable : ScriptableVariable<LayerMask>
     {
         /// <summary>
