@@ -5,6 +5,17 @@ using UnityEngine.Events;
 namespace Shababeek.ReactiveVars
 {
     /// <summary>
+    /// Controls how a binder reads variable changes.
+    /// </summary>
+    public enum BinderUpdateMode
+    {
+        [Tooltip("Reacts to variable change events via subscription.")]
+        Subscribe,
+        [Tooltip("Polls the variable value every frame in Update.")]
+        Poll
+    }
+
+    /// <summary>
     /// Base class for components that bind a ScriptableVariable to a target.
     /// Handles disposable lifecycle, null checks, subscription, and change callbacks.
     /// UniRx usage is isolated here so child classes stay reactive-framework-agnostic.
@@ -12,6 +23,9 @@ namespace Shababeek.ReactiveVars
     /// <typeparam name="T">The ScriptableVariable type this binder works with.</typeparam>
     public abstract class VariableBinder<T> : MonoBehaviour where T : ScriptableVariable
     {
+        [Tooltip("Subscribe reacts to change events. Poll reads the value every frame.")]
+        [SerializeField] private BinderUpdateMode updateMode = BinderUpdateMode.Subscribe;
+
         /// <summary>The variable this binder is bound to.</summary>
         protected abstract T Variable { get; }
 
@@ -32,48 +46,25 @@ namespace Shababeek.ReactiveVars
                 return;
             }
             Bind();
-            Variable.OnRaised
-                .Subscribe(_ => OnVariableChanged())
-                .AddTo(_disposable);
+
+            if (updateMode == BinderUpdateMode.Subscribe)
+            {
+                Variable.OnRaised
+                    .Subscribe(_ => OnVariableChanged())
+                    .AddTo(_disposable);
+            }
         }
 
         protected virtual void OnDisable()
         {
             _disposable?.Dispose();
         }
-    }
 
-    /// <summary>
-    /// Base class for binders that work with any numerical ScriptableVariable.
-    /// Handles the INumericalVariable cast and null-check so children get direct typed access.
-    /// </summary>
-    public abstract class NumericalVariableBinder : VariableBinder<ScriptableVariable>
-    {
-        /// <summary>The variable cast as INumericalVariable. Null if the variable isn't numerical.</summary>
-        protected INumericalVariable NumericalVariable { get; private set; }
-
-        protected sealed override void Bind()
+        private void Update()
         {
-            NumericalVariable = Variable as INumericalVariable;
-            if (NumericalVariable == null)
-            {
-                Debug.LogWarning($"Variable on {gameObject.name} is not a numerical variable", this);
-                return;
-            }
-            BindNumerical();
+            if (updateMode == BinderUpdateMode.Poll && Variable != null)
+                OnVariableChanged();
         }
-
-        protected sealed override void OnVariableChanged()
-        {
-            if (NumericalVariable != null)
-                OnNumericalValueChanged();
-        }
-
-        /// <summary>Called once after the numerical variable is validated. Use for initial state setup.</summary>
-        protected abstract void BindNumerical();
-
-        /// <summary>Called every time the numerical variable value changes.</summary>
-        protected abstract void OnNumericalValueChanged();
     }
 
     /// <summary>
@@ -83,6 +74,9 @@ namespace Shababeek.ReactiveVars
     /// <typeparam name="T">The ScriptableVariable type this binder works with.</typeparam>
     public abstract class TwoWayVariableBinder<T> : MonoBehaviour where T : ScriptableVariable
     {
+        [Tooltip("Subscribe reacts to change events. Poll reads the value every frame.")]
+        [SerializeField] private BinderUpdateMode updateMode = BinderUpdateMode.Subscribe;
+
         /// <summary>The variable this binder syncs with.</summary>
         protected abstract T Variable { get; }
 
@@ -131,9 +125,12 @@ namespace Shababeek.ReactiveVars
 
             GuardedUpdate(UpdateUIFromVariable);
 
-            Variable.OnRaised
-                .Subscribe(_ => GuardedUpdate(UpdateUIFromVariable))
-                .AddTo(_disposable);
+            if (updateMode == BinderUpdateMode.Subscribe)
+            {
+                Variable.OnRaised
+                    .Subscribe(_ => GuardedUpdate(UpdateUIFromVariable))
+                    .AddTo(_disposable);
+            }
 
             SubscribeToUI();
         }
@@ -141,6 +138,12 @@ namespace Shababeek.ReactiveVars
         protected virtual void OnDisable()
         {
             _disposable?.Dispose();
+        }
+
+        private void Update()
+        {
+            if (updateMode == BinderUpdateMode.Poll && Variable != null)
+                GuardedUpdate(UpdateUIFromVariable);
         }
     }
 
@@ -152,6 +155,9 @@ namespace Shababeek.ReactiveVars
         where T1 : ScriptableVariable
         where T2 : ScriptableVariable
     {
+        [Tooltip("Subscribe reacts to change events. Poll reads the value every frame.")]
+        [SerializeField] private BinderUpdateMode updateMode = BinderUpdateMode.Subscribe;
+
         /// <summary>First variable (may be null).</summary>
         protected abstract T1 Variable1 { get; }
 
@@ -181,16 +187,26 @@ namespace Shababeek.ReactiveVars
 
             Bind();
 
-            if (Variable1 != null)
-                Variable1.OnRaised.Subscribe(_ => OnVariable1Changed()).AddTo(_disposable);
+            if (updateMode == BinderUpdateMode.Subscribe)
+            {
+                if (Variable1 != null)
+                    Variable1.OnRaised.Subscribe(_ => OnVariable1Changed()).AddTo(_disposable);
 
-            if (Variable2 != null)
-                Variable2.OnRaised.Subscribe(_ => OnVariable2Changed()).AddTo(_disposable);
+                if (Variable2 != null)
+                    Variable2.OnRaised.Subscribe(_ => OnVariable2Changed()).AddTo(_disposable);
+            }
         }
 
         protected virtual void OnDisable()
         {
             _disposable?.Dispose();
+        }
+
+        private void Update()
+        {
+            if (updateMode != BinderUpdateMode.Poll) return;
+            if (Variable1 != null) OnVariable1Changed();
+            if (Variable2 != null) OnVariable2Changed();
         }
     }
 
@@ -203,6 +219,9 @@ namespace Shababeek.ReactiveVars
         where T2 : ScriptableVariable
         where T3 : ScriptableVariable
     {
+        [Tooltip("Subscribe reacts to change events. Poll reads the value every frame.")]
+        [SerializeField] private BinderUpdateMode updateMode = BinderUpdateMode.Subscribe;
+
         /// <summary>First variable (may be null).</summary>
         protected abstract T1 Variable1 { get; }
 
@@ -238,19 +257,30 @@ namespace Shababeek.ReactiveVars
 
             Bind();
 
-            if (Variable1 != null)
-                Variable1.OnRaised.Subscribe(_ => OnVariable1Changed()).AddTo(_disposable);
+            if (updateMode == BinderUpdateMode.Subscribe)
+            {
+                if (Variable1 != null)
+                    Variable1.OnRaised.Subscribe(_ => OnVariable1Changed()).AddTo(_disposable);
 
-            if (Variable2 != null)
-                Variable2.OnRaised.Subscribe(_ => OnVariable2Changed()).AddTo(_disposable);
+                if (Variable2 != null)
+                    Variable2.OnRaised.Subscribe(_ => OnVariable2Changed()).AddTo(_disposable);
 
-            if (Variable3 != null)
-                Variable3.OnRaised.Subscribe(_ => OnVariable3Changed()).AddTo(_disposable);
+                if (Variable3 != null)
+                    Variable3.OnRaised.Subscribe(_ => OnVariable3Changed()).AddTo(_disposable);
+            }
         }
 
         protected virtual void OnDisable()
         {
             _disposable?.Dispose();
+        }
+
+        private void Update()
+        {
+            if (updateMode != BinderUpdateMode.Poll) return;
+            if (Variable1 != null) OnVariable1Changed();
+            if (Variable2 != null) OnVariable2Changed();
+            if (Variable3 != null) OnVariable3Changed();
         }
     }
 }
