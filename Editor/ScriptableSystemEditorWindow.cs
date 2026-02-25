@@ -52,7 +52,7 @@ namespace Shababeek.Interactions.Editors
         private double _lastRefreshTime;
         private const double RefreshCooldown = 0.5;
 
-        [MenuItem("Shababeek/Scriptable System Window")]
+        [MenuItem("Shababeek/ReactiveVars Overview MenuScriptable System Window")]
         public static void ShowWindow()
         {
             var window = GetWindow<ScriptableSystemEditorWindow>("Scriptable System");
