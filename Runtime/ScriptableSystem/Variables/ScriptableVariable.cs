@@ -129,9 +129,7 @@ namespace Shababeek.ReactiveVars
         /// <summary>
         /// DON'T USE THIS METHOD
         /// </summary>
-        [Obsolete(
-            "This method should not be used, I it only exsist for whan am prototyping and don't want to waste time on a proper archticture")]
-        public override void SetValue(object value)
+       public override void SetValue(object value)
         {
             if (value is T typedValue)
             {
@@ -144,8 +142,6 @@ namespace Shababeek.ReactiveVars
         }
 
 
-        [Obsolete(
-            "This method should not be used, I it only exsist for whan am prototyping and don't want to waste time on a proper archticture")]
         public override object GetValue()
         {
             return Value;

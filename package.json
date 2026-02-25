@@ -2,7 +2,7 @@
     "name": "com.shababeek.reactivevars",
     "version": "1.0.0",
     "displayName": "Reactive Vars",
-    "description": "A reactive variable system built on ScriptableObjects with event-driven bindings, tween support, and editor tooling.",
+    "description": "A ScriptableObject-based reactive variable system for Unity. Includes 23 variable types, 50+ binders (read), 12 drivers (write) with Input System support, a visual condition graph editor, tween system with AnimationCurve easing, runtime debug overlay, and custom editor tooling.",
     "unity": "6000.0",
     "dependencies": {
         "com.unity.textmeshpro": "3.0.6"
@@ -18,6 +18,13 @@
         "scriptable-objects",
         "variables",
         "events",
-        "data-binding"
+        "data-binding",
+        "binders",
+        "drivers",
+        "tween",
+        "input-system",
+        "conditions",
+        "graph-editor",
+        "debug-overlay"
     ]
 }
