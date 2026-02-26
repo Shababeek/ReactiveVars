@@ -15,7 +15,7 @@ namespace Shababeek.ReactiveVars
 
         private readonly Dictionary<ScriptableVariable, object> _snapshots = new();
 
-        private void Awake()
+        private void Start()
         {
             CaptureSnapshot();
         }

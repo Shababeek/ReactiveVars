@@ -107,7 +107,7 @@ namespace Shababeek.ReactiveVars
     {
         [Header("Event Configuration")]
         [Tooltip("Unity event that will be invoked when this game event is raised. Connect other systems here through the inspector.")]
-        [SerializeField] protected UnityEvent onRaised;
+        [SerializeField] protected UnityEvent onRaised = new();
         
         /// <summary>
         /// Observable stream for when this event is raised.
