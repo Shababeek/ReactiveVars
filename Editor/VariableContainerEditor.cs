@@ -45,8 +45,14 @@ namespace Shababeek.ReactiveVars.Editors
             { typeof(GameObjectVariable), ("GameObject", "References") },
             { typeof(TransformVariable), ("Transform", "References") },
             { typeof(AudioClipVariable), ("AudioClip", "References") },
+            { typeof(SpriteVariable), ("Sprite", "References") },
+            { typeof(MaterialVariable), ("Material", "References") },
+
+            // Collections
+            { typeof(StringListVariable), ("StringList", "Collections") },
 
             // Other
+            { typeof(EnumVariable), ("Enum", "Other") },
             { typeof(LayerMaskVariable), ("LayerMask", "Other") },
         };
 

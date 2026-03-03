@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Shababeek.ReactiveVars;
+using UniRx;
 using UnityEngine;
 
 [assembly: InternalsVisibleTo("Shababeek.ReactiveVars.Editor")]
@@ -38,9 +39,13 @@ namespace Shababeek.Sequencing
         [HideInInspector] [SerializeField] private List<Step> allSteps = new();
         [HideInInspector] [SerializeField] private List<StepTransitionGroup> transitionGroups = new();
 
+        [Tooltip("When enabled, transitions are re-evaluated reactively whenever a watched variable changes mid-step.")]
+        [SerializeField] private bool reactiveConditionMonitoring = false;
+
         [SerializeField, ReadOnly] private Step currentStep;
         private bool initialized;
         private Dictionary<Step, List<StepTransition>> _transitionCache;
+        private CompositeDisposable _reactiveDisposable;
 
         internal override float SequencePitch => pitch;
 
@@ -69,6 +74,16 @@ namespace Shababeek.Sequencing
         /// </summary>
         public Step EntryStep => entryStep;
 
+        /// <summary>
+        /// Gets or sets whether reactive condition monitoring is enabled.
+        /// When true, transitions are re-evaluated whenever a watched variable changes mid-step.
+        /// </summary>
+        public bool ReactiveConditionMonitoring
+        {
+            get => reactiveConditionMonitoring;
+            set => reactiveConditionMonitoring = value;
+        }
+
         private void Awake()
         {
             initialized = false;
@@ -86,6 +101,7 @@ namespace Shababeek.Sequencing
         {
             Debug.Log($"Starting branching sequence '{name}'");
 
+            DisposeReactiveSubscriptions();
             currentStep = null;
             status = SequenceStatus.Started;
 
@@ -131,6 +147,30 @@ namespace Shababeek.Sequencing
                 return;
             }
 
+            EvaluateAndTransition();
+        }
+
+        private void TransitionToStep(Step nextStep)
+        {
+            DisposeReactiveSubscriptions();
+            currentStep = nextStep;
+
+            if (reactiveConditionMonitoring)
+                SubscribeToCurrentStepVariables();
+
+            currentStep.Begin();
+        }
+
+        private void EndSequence()
+        {
+            DisposeReactiveSubscriptions();
+            currentStep = null;
+            status = SequenceStatus.Completed;
+            Raise(SequenceStatus.Completed);
+        }
+
+        private void EvaluateAndTransition()
+        {
             if (!_transitionCache.TryGetValue(currentStep, out var transitions) || transitions.Count == 0)
             {
                 EndSequence();
@@ -160,18 +200,51 @@ namespace Shababeek.Sequencing
             EndSequence();
         }
 
-        private void TransitionToStep(Step nextStep)
+        #region Reactive Condition Monitoring
+
+        private void SubscribeToCurrentStepVariables()
         {
-            currentStep = nextStep;
-            currentStep.Begin();
+            if (currentStep == null) return;
+            if (!_transitionCache.TryGetValue(currentStep, out var transitions)) return;
+
+            _reactiveDisposable = new CompositeDisposable();
+            var watchedVariables = new HashSet<ScriptableVariable>();
+
+            foreach (var transition in transitions)
+            {
+                var variable = transition.Condition?.Variable;
+                if (variable == null) continue;
+                if (!watchedVariables.Add(variable)) continue;
+
+                variable.OnRaised
+                    .Subscribe(_ => OnWatchedVariableChanged())
+                    .AddTo(_reactiveDisposable);
+            }
         }
 
-        private void EndSequence()
+        private void OnWatchedVariableChanged()
         {
-            currentStep = null;
-            status = SequenceStatus.Completed;
-            Raise(SequenceStatus.Completed);
+            if (currentStep == null || status != SequenceStatus.Started) return;
+            if (!_transitionCache.TryGetValue(currentStep, out var transitions)) return;
+
+            foreach (var transition in transitions)
+            {
+                if (!transition.Evaluate()) continue;
+                if (transition.TargetStep == null) continue;
+
+                // Force-complete the current step and take this transition
+                currentStep.CompleteStep();
+                return;
+            }
         }
+
+        private void DisposeReactiveSubscriptions()
+        {
+            _reactiveDisposable?.Dispose();
+            _reactiveDisposable = null;
+        }
+
+        #endregion
 
         private void BuildTransitionCache()
         {
@@ -207,6 +280,7 @@ namespace Shababeek.Sequencing
         /// </summary>
         public void Reset()
         {
+            DisposeReactiveSubscriptions();
             foreach (var step in allSteps)
             {
                 if (step != null)
@@ -234,7 +308,7 @@ namespace Shababeek.Sequencing
                 if (np.step == step) return np.position;
             return new Vector2(float.NaN, float.NaN);
         }
-        
+
         public void SetStepPosition(Step step, Vector2 position)
         {
             nodePositions ??= new List<StepNodePosition>();

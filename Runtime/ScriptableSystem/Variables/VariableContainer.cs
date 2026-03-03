@@ -312,6 +312,9 @@ namespace Shababeek.ReactiveVars
         {
             switch (variable)
             {
+                case EnumVariable enumVar:
+                    return enumVar.Value.ToString();
+
                 case IntVariable intVar:
                     return intVar.Value.ToString();
 
@@ -339,6 +342,9 @@ namespace Shababeek.ReactiveVars
                 case Vector2IntVariable vec2IntVar:
                     return JsonUtility.ToJson(vec2IntVar.Value);
 
+                case LayerMaskVariable layerVar:
+                    return layerVar.Value.value.ToString();
+
                 case StringListVariable listVar:
                     return JsonUtility.ToJson(new StringListWrapper { items = listVar.Value });
 
@@ -357,6 +363,10 @@ namespace Shababeek.ReactiveVars
             {
                 switch (variable)
                 {
+                    case EnumVariable enumVar:
+                        enumVar.Value = int.Parse(value);
+                        return true;
+
                     case IntVariable intVar:
                         intVar.Value = int.Parse(value);
                         return true;
@@ -391,6 +401,10 @@ namespace Shababeek.ReactiveVars
 
                     case Vector2IntVariable vec2IntVar:
                         vec2IntVar.Value = JsonUtility.FromJson<Vector2Int>(value);
+                        return true;
+
+                    case LayerMaskVariable layerVar:
+                        layerVar.Value = int.Parse(value);
                         return true;
 
                     case StringListVariable listVar:
