@@ -14,9 +14,9 @@ Use a ScriptableVariable whenever two or more objects need to share a piece of d
 
 Right-click in the Project window: **Create > ReactiveVars > Variables** and pick a type (FloatVariable, IntVariable, BoolVariable, etc.). Give it a descriptive name like `PlayerHealth` or `CurrentScore`.
 
-![Creating a variable in the Project window](images/var-create-menu.png)
+![Creating a variable in the Project window](images/readme-create-variable.png)
 
-![Variable inspector showing value and settings](images/var-inspector.png)
+![Variable inspector showing value and settings](images/readme-variable-inspector.png)
 
 ## API
 
