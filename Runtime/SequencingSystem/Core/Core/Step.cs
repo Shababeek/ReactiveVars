@@ -1,5 +1,5 @@
 using System;
-using System.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,10 +7,9 @@ namespace Shababeek.Sequencing
 {
     /// <summary>
     /// Represents a step in a sequence of actions, which can be started and completed.
-    /// This class handles audio playback, step completion, and events for starting and completing the step.
     /// </summary>
     /// <remarks>
-    /// this ScriptableObject can only be created in a sequence, it should not be created manually.
+    /// This ScriptableObject can only be created in a sequence, it should not be created manually.
     /// </remarks>
     [Serializable]
     public class Step : SequenceNode
@@ -40,6 +39,7 @@ namespace Shababeek.Sequencing
         [SerializeField] [Range(0.1f, 2)] private float pitch;
         private SequenceNode _parentSequence;
         private bool _finished = false;
+        private CancellationTokenSource _audioCts;
 
         /// <summary>
         /// Gets or sets the current status of the step.
@@ -74,8 +74,8 @@ namespace Shababeek.Sequencing
         {
             if (status == SequenceStatus.Started)
             {
+                CancelAudio();
                 onCompleted.Invoke();
-
                 Complete();
             }
             else if (canBeFinishedBeforeStarted)
@@ -89,6 +89,7 @@ namespace Shababeek.Sequencing
         /// </summary>
         public void Initialize(SequenceNode parent)
         {
+            CancelAudio();
             _finished = false;
             status = SequenceStatus.Inactive;
             _parentSequence = parent;
@@ -98,13 +99,40 @@ namespace Shababeek.Sequencing
         {
             audioObject.Stop();
             if (audioClip is null) return;
-            await Task.Delay((int)(audioDelay * 1000));
-            audioObject.clip = audioClip;
-            audioObject.Play();
-            if (!audioOnly) return;
-            await Task.Delay(100);
-            while (audioObject.isPlaying) await Task.Yield();
-            CompleteStep();
+
+            _audioCts = new CancellationTokenSource();
+            var token = _audioCts.Token;
+
+            try
+            {
+                await Awaitable.WaitForSecondsAsync(audioDelay, token);
+                audioObject.clip = audioClip;
+                audioObject.Play();
+
+                if (!audioOnly) return;
+
+                // Wait one frame for the audio source to register as playing
+                await Awaitable.NextFrameAsync(token);
+
+                while (audioObject.isPlaying)
+                {
+                    await Awaitable.NextFrameAsync(token);
+                }
+
+                CompleteStep();
+            }
+            catch (OperationCanceledException)
+            {
+                // Step was completed or reset while audio was playing — expected
+            }
+        }
+
+        private void CancelAudio()
+        {
+            if (_audioCts == null) return;
+            _audioCts.Cancel();
+            _audioCts.Dispose();
+            _audioCts = null;
         }
 
         protected override SequenceStatus DefaultValue => status;
