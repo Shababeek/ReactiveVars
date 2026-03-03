@@ -5,6 +5,7 @@ using Shababeek.ReactiveVars;
 using UnityEngine;
 
 [assembly: InternalsVisibleTo("Shababeek.ReactiveVars.Editor")]
+[assembly: InternalsVisibleTo("Shababeek.ReactiveVars.EditorTests")]
 
 namespace Shababeek.Sequencing
 {

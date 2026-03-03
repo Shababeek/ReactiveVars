@@ -121,6 +121,7 @@ namespace Shababeek.Sequencing
         /// </summary>
         public void Reset()
         {
+            if (steps == null) return;
             foreach (var step in steps)
             {
                 step.Raise(SequenceStatus.Inactive);

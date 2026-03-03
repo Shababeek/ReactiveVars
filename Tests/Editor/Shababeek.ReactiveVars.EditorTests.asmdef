@@ -1,0 +1,26 @@
+{
+    "name": "Shababeek.ReactiveVars.EditorTests",
+    "rootNamespace": "Shababeek.ReactiveVars.EditorTests",
+    "references": [
+        "GUID:515d28ca31174074884fc7b5daacb9e4",
+        "GUID:78ac2dc64cbf6470b87015087fd23170",
+        "GUID:560b04d1a97f54a4e82edc0cbbb69285",
+        "GUID:27619889b8ba8c24980f49ee34dbb44a",
+        "GUID:0acc523941302664db1f4e527237feb3"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

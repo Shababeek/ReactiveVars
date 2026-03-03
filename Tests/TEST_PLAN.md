@@ -13,13 +13,13 @@ Tests/
 │   ├── BinderTests.cs
 │   ├── DriverTests.cs
 │   ├── TweenTests.cs
-│   ├── ConditionTests.cs
 │   ├── EventTests.cs
-│   └── UtilityTests.cs
+│   ├── UtilityTests.cs
+│   ├── SequenceTests.cs
+│   └── BranchingSequenceTests.cs
 └── Editor/                       (Edit Mode tests — no scene needed)
     ├── SerializationTests.cs
-    ├── VariableContainerTests.cs
-    └── ConditionGraphSerializationTests.cs
+    └── VariableContainerTests.cs
 ```
 
 ## Test Categories
@@ -133,44 +133,48 @@ CooldownDriver:
   ✓ Remaining time variable updates each frame
 ```
 
-### 5. Condition Tests (Edit Mode)
+### 5. Sequence Tests (Play Mode)
 
 ```
-ComparisonNode:
-  ✓ GreaterThan evaluates correctly
-  ✓ LessThan evaluates correctly
-  ✓ Equal uses Approximately for floats
-  ✓ Null variable returns false
+Sequence:
+  ✓ Begin() starts first step
+  ✓ Steps execute in order
+  ✓ CompleteStep advances to next step
+  ✓ Completing last step marks sequence as Completed
+  ✓ GoToPreviousStep moves backward
+  ✓ Reset reinitializes to Inactive
+  ✓ Audio plays on step start with correct delay
+  ✓ AudioOnly step auto-completes when audio finishes
+  ✓ Step onStarted/onCompleted UnityEvents fire correctly
+  ✓ canBeFinishedBeforeStarted allows early completion
 
-BoolCheckNode:
-  ✓ Matches expected value correctly
-  ✓ Null variable returns false
+BranchingSequence:
+  ✓ Begin() starts first step
+  ✓ Transitions evaluate in order (first match wins)
+  ✓ Correct target step is reached based on condition
+  ✓ No matching transition ends the sequence
+  ✓ TransitionEvent fires on transition
+  ✓ Reset clears all state
 
-AndNode:
-  ✓ Returns true when all inputs true
-  ✓ Returns false when any input false
-  ✓ Empty inputs returns false
+BranchCondition:
+  ✓ Equals comparison works for all variable types
+  ✓ GreaterThan/LessThan work for numeric variables
+  ✓ Null variable returns true (unconditional)
+  ✓ NotEquals comparison works correctly
 
-OrNode:
-  ✓ Returns true when any input true
-  ✓ Returns false when all inputs false
+SequenceBehaviour:
+  ✓ StartOnAwake triggers Begin with delay
+  ✓ SkipCurrentStep force-completes current step
+  ✓ RestartSequence resets and restarts
 
-NotNode:
-  ✓ Inverts true to false and vice versa
-
-RangeNode:
-  ✓ Inclusive range includes boundaries
-  ✓ Exclusive range excludes boundaries
-
-ConditionGraph:
-  ✓ Evaluate walks from output node
-  ✓ Null output returns false
-  ✓ Missing nodes don't crash
-  ✓ OnResultChanged fires on evaluation
-  ✓ OnResultChanged only fires on actual change
-  ✓ AttachListener subscribes to variables
-  ✓ DetachListener unsubscribes
-  ✓ Complex graph (Comparison AND BoolCheck) evaluates correctly
+Actions:
+  ✓ AnimationAction sets trigger and auto-completes on animation end
+  ✓ EventAction fires events and auto-completes after delay
+  ✓ TriggerAction completes on trigger enter with tag filter
+  ✓ ProximityAction completes on Enter/Exit/StayDuration conditions
+  ✓ MultiConditionAction completes in All/Any/Count modes
+  ✓ SequenceControlAction StartAndWait/StartOnly/WaitForCompletion work
+  ✓ Actions clean up subscriptions on step complete
 ```
 
 ### 6. Tween Tests (Play Mode)
@@ -205,10 +209,10 @@ VariableContainer:
   ✓ GetVariable<T> finds by name
   ✓ TryGetVariable returns false for missing
 
-ConditionGraph serialization:
-  ✓ [SerializeReference] nodes survive asset save/load
-  ✓ Edges persist correctly
-  ✓ OutputNodeId persists
+Sequence serialization:
+  ✓ Step list persists correctly on Sequence asset
+  ✓ BranchingSequence transitions and conditions persist
+  ✓ Step references survive asset save/load
 ```
 
 ### 8. Utility Tests (Play Mode)
@@ -250,8 +254,8 @@ Unity -runTests -testPlatform EditMode -projectPath .
 ## Implementation Priority
 
 1. **Variable Tests** — most critical, everything depends on them
-2. **Condition Tests** — new system, needs validation
-3. **Event Tests** — small set, quick to write
+2. **Event Tests** — small set, quick to write
+3. **Sequence Tests** — validate step execution, branching, and actions
 4. **Binder Tests** — many binders but test the base class thoroughly, spot-check specifics
 5. **Driver Tests** — focus on collision/trigger tag filtering and timer logic
 6. **Tween Tests** — verify numerical tween silent update behavior

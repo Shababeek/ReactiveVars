@@ -1,5 +1,8 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Shababeek.ReactiveVars;
+
+[assembly: InternalsVisibleTo("Shababeek.ReactiveVars.EditorTests")]
 
 namespace Shababeek.Sequencing.Editors
 {
