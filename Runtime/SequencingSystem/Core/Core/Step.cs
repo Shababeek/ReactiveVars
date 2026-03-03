@@ -16,27 +16,28 @@ namespace Shababeek.Sequencing
     {
         [Tooltip("The audio clip to play when this step starts.")]
         [SerializeField] private AudioClip audioClip;
-        
+
         [Tooltip("Enable to allow the step to be completed before it starts.")]
         [SerializeField] private bool canBeFinishedBeforeStarted;
-        
+
         [Tooltip("When enabled, the step automatically completes when the audio finishes playing.")]
         [SerializeField] private bool audioOnly;
-        
+
         [Tooltip("Delay in seconds before starting the audio playback.")]
         [SerializeField] private float audioDelay = .1f;
-        
+
         [Tooltip("Unity event raised when the step starts.")]
         [SerializeField] private UnityEvent onStarted;
-        
+
         [Tooltip("Unity event raised when the step completes.")]
         [SerializeField] private UnityEvent onCompleted;
-        
+
         [Tooltip("When enabled, overrides the sequence's default pitch with a custom value.")]
         [SerializeField] private bool overridePitch = false;
-        
+
         [Tooltip("Custom pitch for this step's audio (0.1 to 2.0).")]
         [SerializeField] [Range(0.1f, 2)] private float pitch;
+
         private SequenceNode _parentSequence;
         private bool _finished = false;
         private CancellationTokenSource _audioCts;

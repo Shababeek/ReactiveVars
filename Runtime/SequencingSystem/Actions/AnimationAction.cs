@@ -22,7 +22,6 @@ namespace Shababeek.Sequencing
         [SerializeField] private int animationLayer = 0;
 
         private bool _waitingForAnimation = false;
-        private int _targetStateHash;
 
         /// <summary>
         /// Completes the step. Can be called from an animation event.

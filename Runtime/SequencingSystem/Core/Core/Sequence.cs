@@ -18,7 +18,7 @@ namespace Shababeek.Sequencing
         [SerializeField, Range(0.1f, 2)] internal float pitch = 1;
 
         internal override float SequencePitch => pitch;
-        
+
         [Tooltip("Audio volume level for the sequence (0 to 1).")]
         [SerializeField, Range(0, 1)] private float volume = .5f;
 
@@ -31,12 +31,12 @@ namespace Shababeek.Sequencing
         /// Gets whether the sequence has been started.
         /// </summary>
         public bool Started => status == SequenceStatus.Started;
-        
+
         /// <summary>
         /// Gets the current step being executed in the sequence.
         /// </summary>
         public Step CurrentStep => currentStepIndex < steps.Count ? steps[currentStepIndex] : null;
-        
+
         /// <summary>
         /// Gets the list of all steps in the sequence.
         /// </summary>
