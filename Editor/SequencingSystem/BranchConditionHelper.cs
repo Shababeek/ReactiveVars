@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using Shababeek.ReactiveVars;
 
@@ -7,79 +6,58 @@ using Shababeek.ReactiveVars;
 namespace Shababeek.Sequencing.Editors
 {
     /// <summary>
-    /// Provides reflection-based access to BranchCondition's private serialized fields.
-    /// Used by both the inspector editor and the graph window's transition detail panel.
+    /// Provides typed access to BranchCondition's internal fields for editor and test use.
     /// </summary>
     internal static class BranchConditionHelper
     {
-        private static readonly FieldInfo VariableField =
-            typeof(BranchCondition).GetField("variable", BindingFlags.NonPublic | BindingFlags.Instance);
-
-        private static readonly FieldInfo ComparisonField =
-            typeof(BranchCondition).GetField("comparison", BindingFlags.NonPublic | BindingFlags.Instance);
-
-        private static readonly FieldInfo BoolValueField =
-            typeof(BranchCondition).GetField("boolValue", BindingFlags.NonPublic | BindingFlags.Instance);
-
-        private static readonly FieldInfo IntValueField =
-            typeof(BranchCondition).GetField("intValue", BindingFlags.NonPublic | BindingFlags.Instance);
-
-        private static readonly FieldInfo FloatValueField =
-            typeof(BranchCondition).GetField("floatValue", BindingFlags.NonPublic | BindingFlags.Instance);
-
-        private static readonly FieldInfo StringValueField =
-            typeof(BranchCondition).GetField("stringValue", BindingFlags.NonPublic | BindingFlags.Instance);
-
         /// <summary>
         /// Sets the ScriptableVariable on a BranchCondition.
         /// </summary>
-        public static void SetVariable(BranchCondition c, ScriptableVariable v) => VariableField?.SetValue(c, v);
+        public static void SetVariable(BranchCondition c, ScriptableVariable v) => c.SetVariable(v);
 
         /// <summary>
         /// Sets the ComparisonType on a BranchCondition.
         /// </summary>
-        public static void SetComparison(BranchCondition c, ComparisonType v) => ComparisonField?.SetValue(c, v);
+        public static void SetComparison(BranchCondition c, ComparisonType v) => c.SetComparison(v);
 
         /// <summary>
         /// Gets the bool target value from a BranchCondition.
         /// </summary>
-        public static bool GetBool(BranchCondition c) => BoolValueField != null && (bool)BoolValueField.GetValue(c);
+        public static bool GetBool(BranchCondition c) => c.BoolValue;
 
         /// <summary>
         /// Sets the bool target value on a BranchCondition.
         /// </summary>
-        public static void SetBool(BranchCondition c, bool v) => BoolValueField?.SetValue(c, v);
+        public static void SetBool(BranchCondition c, bool v) => c.BoolValue = v;
 
         /// <summary>
         /// Gets the int target value from a BranchCondition.
         /// </summary>
-        public static int GetInt(BranchCondition c) => IntValueField != null ? (int)IntValueField.GetValue(c) : 0;
+        public static int GetInt(BranchCondition c) => c.IntValue;
 
         /// <summary>
         /// Sets the int target value on a BranchCondition.
         /// </summary>
-        public static void SetInt(BranchCondition c, int v) => IntValueField?.SetValue(c, v);
+        public static void SetInt(BranchCondition c, int v) => c.IntValue = v;
 
         /// <summary>
         /// Gets the float target value from a BranchCondition.
         /// </summary>
-        public static float GetFloat(BranchCondition c) =>
-            FloatValueField != null ? (float)FloatValueField.GetValue(c) : 0f;
+        public static float GetFloat(BranchCondition c) => c.FloatValue;
 
         /// <summary>
         /// Sets the float target value on a BranchCondition.
         /// </summary>
-        public static void SetFloat(BranchCondition c, float v) => FloatValueField?.SetValue(c, v);
+        public static void SetFloat(BranchCondition c, float v) => c.FloatValue = v;
 
         /// <summary>
         /// Gets the string target value from a BranchCondition.
         /// </summary>
-        public static string GetString(BranchCondition c) =>
-            StringValueField != null ? (string)StringValueField.GetValue(c) ?? "" : "";
+        public static string GetString(BranchCondition c) => c.StringValue;
 
         /// <summary>
         /// Sets the string target value on a BranchCondition.
         /// </summary>
-        public static void SetString(BranchCondition c, string v) => StringValueField?.SetValue(c, v);
+        public static void SetString(BranchCondition c, string v) => c.StringValue = v;
     }
 }

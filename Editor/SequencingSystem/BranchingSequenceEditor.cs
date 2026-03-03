@@ -368,8 +368,6 @@ namespace Shababeek.Sequencing.Editors
 
         private void DrawConditionValueFields(BranchCondition condition, ScriptableVariable variable)
         {
-            // Use SerializedObject reflection to edit the condition fields
-            // Since BranchCondition is nested, we edit via Undo on the parent asset
             if (variable is BoolVariable)
             {
                 DrawBoolCondition(condition);
@@ -404,8 +402,6 @@ namespace Shababeek.Sequencing.Editors
             var currentComp = condition.Comparison == ComparisonType.NotEquals ? 1 : 0;
             var newComp = EditorGUILayout.Popup(currentComp, comparisonOptions, GUILayout.Width(100));
 
-            var boolField = new SerializedObject(_sequence);
-            // Direct field editing via reflection for bool value
             var currentBoolVal = GetConditionBoolValue(condition);
             var newBoolVal = EditorGUILayout.Toggle(currentBoolVal);
 
@@ -495,64 +491,37 @@ namespace Shababeek.Sequencing.Editors
 
         #endregion
 
-        #region Condition Field Access (reflection helpers)
-
-        // These use System.Reflection to access private serialized fields on BranchCondition
-        // since it's a nested [Serializable] class edited through the parent ScriptableObject.
-
-        private static readonly System.Reflection.FieldInfo VariableField =
-            typeof(BranchCondition).GetField("variable",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-        private static readonly System.Reflection.FieldInfo ComparisonField =
-            typeof(BranchCondition).GetField("comparison",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-        private static readonly System.Reflection.FieldInfo BoolValueField =
-            typeof(BranchCondition).GetField("boolValue",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-        private static readonly System.Reflection.FieldInfo IntValueField =
-            typeof(BranchCondition).GetField("intValue",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-        private static readonly System.Reflection.FieldInfo FloatValueField =
-            typeof(BranchCondition).GetField("floatValue",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-        private static readonly System.Reflection.FieldInfo StringValueField =
-            typeof(BranchCondition).GetField("stringValue",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        #region Condition Field Access
 
         private static void SetConditionVariable(BranchCondition condition, ScriptableVariable variable)
-            => VariableField.SetValue(condition, variable);
+            => condition.SetVariable(variable);
 
         private static void SetConditionComparison(BranchCondition condition, ComparisonType comparison)
-            => ComparisonField.SetValue(condition, comparison);
+            => condition.SetComparison(comparison);
 
         private static bool GetConditionBoolValue(BranchCondition condition)
-            => (bool)BoolValueField.GetValue(condition);
+            => condition.BoolValue;
 
         private static void SetConditionBoolValue(BranchCondition condition, bool value)
-            => BoolValueField.SetValue(condition, value);
+            => condition.BoolValue = value;
 
         private static int GetConditionIntValue(BranchCondition condition)
-            => (int)IntValueField.GetValue(condition);
+            => condition.IntValue;
 
         private static void SetConditionIntValue(BranchCondition condition, int value)
-            => IntValueField.SetValue(condition, value);
+            => condition.IntValue = value;
 
         private static float GetConditionFloatValue(BranchCondition condition)
-            => (float)FloatValueField.GetValue(condition);
+            => condition.FloatValue;
 
         private static void SetConditionFloatValue(BranchCondition condition, float value)
-            => FloatValueField.SetValue(condition, value);
+            => condition.FloatValue = value;
 
         private static string GetConditionStringValue(BranchCondition condition)
-            => (string)StringValueField.GetValue(condition) ?? "";
+            => condition.StringValue;
 
         private static void SetConditionStringValue(BranchCondition condition, string value)
-            => StringValueField.SetValue(condition, value);
+            => condition.StringValue = value;
 
         #endregion
 

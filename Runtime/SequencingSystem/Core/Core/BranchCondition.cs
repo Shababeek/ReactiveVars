@@ -1,6 +1,10 @@
 using System;
+using System.Runtime.CompilerServices;
 using Shababeek.ReactiveVars;
 using UnityEngine;
+
+[assembly: InternalsVisibleTo("Shababeek.ReactiveVars.Editor")]
+[assembly: InternalsVisibleTo("Shababeek.ReactiveVars.EditorTests")]
 
 namespace Shababeek.Sequencing
 {
@@ -50,6 +54,37 @@ namespace Shababeek.Sequencing
         /// Gets the comparison operator.
         /// </summary>
         public ComparisonType Comparison => comparison;
+
+        #region Internal Setters (Editor / Test Access)
+
+        internal void SetVariable(ScriptableVariable value) => variable = value;
+        internal void SetComparison(ComparisonType value) => comparison = value;
+
+        internal bool BoolValue
+        {
+            get => boolValue;
+            set => boolValue = value;
+        }
+
+        internal int IntValue
+        {
+            get => intValue;
+            set => intValue = value;
+        }
+
+        internal float FloatValue
+        {
+            get => floatValue;
+            set => floatValue = value;
+        }
+
+        internal string StringValue
+        {
+            get => stringValue ?? "";
+            set => stringValue = value;
+        }
+
+        #endregion
 
         /// <summary>
         /// Evaluates whether this condition is satisfied based on the current variable value.
