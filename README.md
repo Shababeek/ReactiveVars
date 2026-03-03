@@ -16,20 +16,28 @@
 
 ---
 
-Variables are shared ScriptableObject assets. Any component can read or write them. When a variable changes, every subscriber gets notified automatically — no direct references between objects, no singletons, no manual event wiring.
+## What Is ReactiveVars?
 
-**Binders** read variables and push values into components. **Drivers** write into variables from external sources like input, physics, and timers. **Tweenables** interpolate values smoothly over time. **Conditions** let you build complex boolean logic visually in a node graph. All configurable from the inspector, all zero-code by default.
+ReactiveVars lets you build game systems that talk to each other without being directly connected. Instead of one script finding another script to read its data, both scripts point to the same **Variable** asset — a small file that lives in your Project folder. When one script changes the variable, anything watching it updates automatically.
 
-```csharp
-// A health system with zero coupling between damage, UI, and audio
-public FloatVariable playerHealth;    // Shared asset — drag & drop in inspector
+This means you can build things like health bars, score displays, sound effects, and UI toggles without writing code or creating complex chains of references between objects.
 
-void TakeDamage(float amount) => playerHealth.Value -= amount;
+### Core Concepts at a Glance
 
-// Meanwhile, a health bar binder on a completely different object
-// automatically updates because it's subscribed to the same variable.
-// No GetComponent. No Find. No event registration.
-```
+| Concept | What It Does | Who Uses It |
+|---|---|---|
+| **Variable** | A shared value (number, bool, color, etc.) that lives as a project asset | Everyone — the foundation of the system |
+| **Binder** | Reads a variable and pushes the value into a component (text, image, animator, etc.) | Designers — drag a variable onto a binder, done |
+| **Driver** | Writes into a variable from a source (input, physics, timer, distance, etc.) | Designers — feeds data into the system |
+| **Tween** | Smoothly interpolates a variable's value over time | Designers/Programmers — smooth transitions |
+| **Event** | A signal with no permanent state — fire and forget | Everyone — trigger responses to moments |
+| **Sequence** | An ordered series of steps that execute one after another, with optional branching | Designers — tutorials, cutscenes, guided flows |
+
+### How It Fits Together
+
+A typical setup looks like this: a **Driver** writes a value (say, the player's health) into a **Variable**. One or more **Binders** on completely separate objects read that variable and update their components (a health bar fills, a warning sound plays, a screen effect activates). Nobody knows about anyone else — they only know about the shared variable.
+
+For more complex flows like tutorials or narrative sequences, the **Sequencing System** lets you define ordered steps with audio, events, and completion conditions — all wired in the inspector.
 
 ## Table of Contents
 
@@ -40,7 +48,7 @@ void TakeDamage(float amount) => playerHealth.Value -= amount;
 - [Events](#events)
 - [Binders (Read)](#binders-read)
 - [Drivers (Write)](#drivers-write)
-- [Conditions (Logic)](#conditions-logic)
+- [Sequencing System](#sequencing-system)
 - [Tween System](#tween-system)
 - [Variable Containers](#variable-containers)
 - [Utilities](#utilities)
@@ -66,17 +74,47 @@ https://github.com/Ahmadabobakr/ReactiveVars.git
 
 ## Quick Start
 
-1. **Create a variable:** Right-click in Project > *Create > ReactiveVars > Variables > FloatVariable*
-2. **Write to it:** Drag the asset onto any script's `FloatVariable` field. Set `variable.Value = 10f;` from code.
-3. **Read from it:** Add a `NumericalTextBinder` component to a TextMeshPro object. Drag in the same variable. Done — the text updates automatically.
+### For Designers (No Code)
 
-No code needed for step 3. The 50+ included binders cover most common use cases out of the box.
+1. **Create a variable:** Right-click in Project > *Create > ReactiveVars > Variables > FloatVariable*. Name it something descriptive like `PlayerHealth`.
+
+![Creating a variable from the context menu](Documentation~/images/readme-create-variable.png)
+
+2. **Display it:** Add a `NumericalTextBinder` component to a TextMeshPro object. Drag your variable into the slot. The text now shows the variable's value and updates automatically whenever it changes.
+
+![Binder component with variable assigned](Documentation~/images/readme-binder-setup.png)
+
+3. **Feed it data:** Add a driver component to a relevant object (e.g., a `TimerDriver` to count down, or a `DistanceDriver` to track distance between objects). Assign the same variable. The driver writes, the binder reads — no wiring between objects needed.
+
+![Driver component writing to a variable](Documentation~/images/readme-driver-setup.png)
+
+The 50+ included binders and 12 built-in drivers cover most common use cases without writing a single line of code.
+
+### For Programmers
+
+```csharp
+public FloatVariable playerHealth;  // Drag the asset into this field in the inspector
+
+void TakeDamage(float amount) => playerHealth.Value -= amount;  // All subscribers notified
+
+// Meanwhile, binders on completely separate objects update automatically.
+// No GetComponent. No Find. No event registration.
+```
 
 ---
 
 ## Variables
 
-ScriptableObject assets that hold a single value and broadcast changes via UniRx observables.
+Variables are the heart of ReactiveVars. Each variable is a small asset file that holds a single value — a number, a color, a boolean, a position, etc. You create them in your Project folder and share them between any objects that need to read or write that value.
+
+**When to use a Variable:** Whenever two or more objects need to share a piece of data without knowing about each other. Common examples: player health, score, current level, selected color, active state of a UI panel.
+
+**How to create one:** Right-click in Project > *Create > ReactiveVars > Variables* and pick a type.
+
+![Variable inspector showing value field](Documentation~/images/readme-variable-inspector.png)
+
+<details>
+<summary><strong>For Programmers — Code API</strong></summary>
 
 ```csharp
 public FloatVariable playerHealth;
@@ -97,6 +135,8 @@ void SilentReset()
     playerHealth.SetValueWithoutNotify(100f);  // No events fired
 }
 ```
+
+</details>
 
 ### 23 Variable Types
 
@@ -166,14 +206,26 @@ void Update()
 
 ## Events
 
-ScriptableObject-based events that decouple senders from listeners.
+Events are signals — they notify listeners that something happened, without carrying permanent state. Unlike variables (which hold a value), events are fire-and-forget.
 
-| Class | Description |
+**When to use an Event vs a Variable:** Use a Variable when you care about the current value (health, score, position). Use an Event when you care about the moment something happens (player died, level completed, button pressed).
+
+**How to create one:** Right-click in Project > *Create > ReactiveVars > Events > GameEvent*.
+
+**How to listen in the scene:** Add a `GameEventListener` component to any GameObject, assign the event asset, and wire up UnityEvents in the inspector — no code needed.
+
+![GameEventListener inspector with events wired](Documentation~/images/readme-event-listener.png)
+
+| Component | What It Does |
 |---|---|
-| `GameEvent` | No data payload. `Raise()` to fire. |
-| `GameEvent<T>` | Typed data payload. `Raise(data)` to fire with data. |
-| `GameEventListener` | MonoBehaviour bridge — triggers UnityEvents in the inspector. Zero code. |
-| `ObjectLifecycleEvents` | Fires events on `OnEnable`, `OnDisable`, `OnDestroy`. |
+| **GameEvent** | A signal with no data. Create as an asset, raise it from code or UnityEvents. |
+| **GameEventListener** | Scene component that listens for a GameEvent and triggers UnityEvents in response. |
+| **ObjectLifecycleEvents** | Automatically fires events when a GameObject is enabled, disabled, or destroyed. |
+
+<details>
+<summary><strong>For Programmers — Typed Events</strong></summary>
+
+`GameEvent<T>` carries a typed data payload. Use `Raise(data)` to fire with data and subscribe via `OnRaisedData`.
 
 ```csharp
 public GameEvent onPlayerDeath;
@@ -181,11 +233,19 @@ public GameEvent onPlayerDeath;
 void Die() => onPlayerDeath.Raise();  // All listeners respond
 ```
 
+</details>
+
 ---
 
 ## Binders (Read)
 
-Binders **read** from a variable and push the value to a component. Assign the variable in the inspector — no code needed for the 50+ included binders.
+Binders are components you add to GameObjects that **read** a variable and automatically update something visual or functional — a text label, an image fill, an animator parameter, a GameObject's active state, etc. You assign the variable in the inspector and the binder handles the rest.
+
+**When to use a Binder:** Whenever you want something in the scene to react to a variable changing. Common examples: a health bar that fills based on a health variable, text that displays a score, a door that opens when a bool is true.
+
+**How to use:** Add a binder component to a GameObject (e.g., `NumericalTextBinder` on a TextMeshPro object), drag in a variable, and you're done.
+
+![Binder component with update mode dropdown](Documentation~/images/readme-binder-update-modes.png)
 
 ### Update Modes
 
@@ -280,9 +340,13 @@ public class HealthBarBinder : VariableBinder<FloatVariable>
 
 ## Drivers (Write)
 
-Drivers **write** to a variable from an external source — the counterpart to binders.
+Drivers are the counterpart to binders — they **write** values into variables from external sources like player input, physics, timers, and distance checks. You add a driver component to a GameObject, point it at a variable, and it feeds data into the system automatically.
 
-Every driver has a **Silent Updates** toggle. When enabled, values are written via `SetValueWithoutNotify` to avoid per-frame event overhead. Pair with Poll mode binders on the read side.
+**When to use a Driver:** Whenever you need to get real-world data (player position, input, collisions, time) into a variable. Common examples: tracking the distance between two objects, counting down a timer, detecting when the player enters a trigger zone.
+
+**Silent Updates:** Every driver has a **Silent Updates** toggle. When enabled, the driver writes values without triggering subscriber notifications — useful for drivers that update every frame (like input or position tracking). Pair with **Poll** mode binders on the read side to pick up these silent changes.
+
+![Driver component with Silent Updates toggle](Documentation~/images/readme-driver-silent-updates.png)
 
 ### Writing Custom Drivers
 
@@ -321,47 +385,76 @@ public class MousePositionDriver : VariableDriver<Vector3Variable>
 
 ---
 
-## Conditions (Logic)
+## Sequencing System
 
-Build complex boolean logic by wiring condition nodes together in a visual graph editor. The result drives UnityEvents or writes to a `BoolVariable` — no code needed.
+The Sequencing System lets you build ordered flows — tutorials, cutscenes, guided interactions, or any gameplay that happens in a specific order. You define a series of **steps** as an asset, then place a behaviour component in your scene to run it.
 
-### Condition Graph
+**When to use a Sequence:** Whenever something needs to happen in a specific order with control over when each step starts and finishes. Common examples: a tutorial that walks the player through mechanics one by one, a cutscene with timed dialogue and animations, an onboarding flow with proximity checks.
 
-Create via *Right-click > Create > ReactiveVars > Conditions > Condition Graph*. Double-click to open the visual node editor.
+### Linear Sequences
 
-**Node types:**
+A linear sequence executes steps one after another. Each step can play audio, fire UnityEvents, and wait for a completion condition before advancing.
 
-| Node | Description |
+**How to create one:** Right-click in Project > *Create > Shababeek > Sequencing > Sequence*. Add steps in the inspector using the reorderable list.
+
+**How to run it in a scene:** Add a `SequenceBehaviour` component to a GameObject and assign your sequence asset. Enable **Start On Awake** to auto-start, or call `StartSequence()` from code or a UnityEvent.
+
+#### Step Properties
+
+Each step in a sequence has these settings:
+
+| Property | What It Does |
 |---|---|
-| `ComparisonNode` | Compare a numerical variable (>, <, ==, !=, >=, <=) |
-| `BoolCheckNode` | Check if a BoolVariable matches an expected value |
-| `AndNode` | True when ALL connected inputs are true |
-| `OrNode` | True when ANY connected input is true |
-| `NotNode` | Inverts a single input |
-| `RangeNode` | Check if a numerical variable is within min/max |
+| **Audio Clip** | Audio to play when the step begins |
+| **Audio Delay** | Seconds to wait before playing the audio |
+| **Audio Only** | If checked, the step auto-completes when the audio finishes playing |
+| **On Started** | UnityEvent fired when this step begins — wire up any scene logic here |
+| **On Completed** | UnityEvent fired when this step finishes |
 
-The graph automatically subscribes to all referenced variables and re-evaluates reactively. Right-click any node to set it as the output.
+### Branching Sequences
 
-### Condition Listener
+Branching sequences add conditional transitions — when a step completes, the system evaluates conditions to decide which step to go to next. This lets you build non-linear flows like dialogue trees or adaptive tutorials.
 
-Add a `ConditionListener` component to respond to condition changes:
+**How to create one:** Right-click in Project > *Create > Shababeek > Sequencing > Branching Sequence*. Use the visual graph editor to lay out steps and draw transition connections between them.
 
-```csharp
-// Configured entirely in the inspector:
-// - Assign a ConditionGraph
-// - Wire onConditionTrue / onConditionFalse / onConditionChanged UnityEvents
-// - Optionally write to a BoolVariable
-```
+**Transitions** connect steps with conditions. Each transition checks a ReactiveVars variable (e.g., "is score > 10?" or "is tutorialComplete == true?"). The first transition whose condition is true wins. If no transition matches, the sequence ends.
 
-### Graph Editor Features
+**How to run it:** Add a `BranchingSequenceBehaviour` component and assign the branching sequence asset.
 
-The visual editor supports zoom, pan, selection, node creation via right-click context menu, minimap, and undo/redo. Output nodes are highlighted with an orange border.
+### Actions (Step Completion Logic)
+
+Actions are components you attach to scene GameObjects that control **when a step completes**. They listen to a specific step and mark it as done when their condition is met.
+
+| Action | What It Does | Example Use |
+|---|---|---|
+| **AnimationAction** | Completes the step when an animation finishes | "Wait for the character's wave animation to end" |
+| **EventAction** | Fires events and optionally auto-completes after a delay | "Show a UI panel, then auto-advance after 3 seconds" |
+| **TriggerAction** | Completes when a physics trigger is entered | "Step completes when the player walks into a zone" |
+| **ProximityAction** | Completes based on distance between transforms | "Step completes when player is within 2m of the NPC" |
+| **MultiConditionAction** | Combines multiple actions — completes when All, Any, or a Count are met | "Step completes when the player has done 2 of 3 tasks" |
+| **SequenceControlAction** | Starts or waits for another sequence | "Play a sub-sequence, then continue when it finishes" |
+
+**How to use:** Add an action component to any GameObject in the scene. Assign the step it should listen to. The action subscribes automatically and calls `CompleteStep()` when its condition is met.
+
+### Scene Helpers
+
+| Component | What It Does |
+|---|---|
+| **StepEventListener** | Connects step start/complete events to UnityEvents in the inspector — no code needed |
+| **MultiStepListener** | Listens to multiple steps at once, fires when any of them start or complete |
+| **AudioPlayerInSequence** | Utility to play additional audio clips during a sequence |
+
+### Debug Controls
+
+`SequenceBehaviour` has an **Enable Debug Controls** toggle. When enabled, press **N** to skip the current step and **P** to go back to the previous step during play mode. The inspector also shows Start and Next Step buttons while playing.
 
 ---
 
 ## Tween System
 
-Smooth value interpolation managed by a `VariableTweener` MonoBehaviour. Add one to your scene — it updates all registered tweenables each frame with a configurable global speed multiplier.
+The tween system smoothly interpolates values over time instead of snapping them instantly. This is useful for any visual polish — fading UI elements, smoothly moving cameras, gradually filling progress bars.
+
+**How to set up:** Add a `VariableTweener` component to a GameObject in your scene. This is the manager that drives all tweens. It has a configurable **global speed multiplier** to scale all tween speeds at once.
 
 ### Tweenable Types
 
@@ -415,7 +508,9 @@ Set the health bar binder to **Poll** mode so it reads the silently-updating val
 
 ## Variable Containers
 
-Group related variables and events into a single asset for organization and bulk operations.
+Variable Containers group related variables and events into a single asset. This is useful for organizing things like "all player stats" or "all UI settings" into one place, and for bulk operations like saving, loading, or resetting all of them at once.
+
+**How to create one:** Right-click in Project > *Create > ReactiveVars > Variable Container*. Drag variables and events into the container's list in the inspector.
 
 ```csharp
 public VariableContainer playerStats;
@@ -469,27 +564,29 @@ Add component: ReactiveVars > Utility > Variable Debug Overlay
 
 ## Editor Tools
 
-| Tool | Description |
+| Tool | What It Does |
 |---|---|
 | **Scriptable System Window** | Browse, search, and create all variables and events in the project |
-| **Condition Graph Editor** | Visual node-graph editor for building condition logic |
 | **Variable Inspector** | Shows which scene objects reference a selected variable |
-| **GameEvent Inspector** | Debug events with a test Raise button |
-| **ConditionGraph Inspector** | Summary view with "Open in Graph Editor" button and play-mode evaluation |
+| **GameEvent Inspector** | Debug events with a test Raise button in play mode |
+| **Sequence Inspector** | Reorderable step list with add/remove, renaming, and a "Create Sequence in Scene" button that auto-generates a GameObject with the right components |
+| **Branching Sequence Graph Editor** | Visual node-based editor for laying out branching steps and transitions |
 | **VariableReference Drawer** | Inline constant/variable toggle in the inspector |
 | **NumericalReference Drawer** | Constant/variable toggle for numeric references |
-| **ReadOnly Attribute** | `[ReadOnly]` — mark any serialized field as non-editable |
+| **ReadOnly Attribute** | `[ReadOnly]` — mark any serialized field as non-editable in the inspector |
 
 ---
 
 ## Architecture
 
+This section shows how the major types relate to each other. Designers can skip this — it's mainly useful for programmers extending the system.
+
 ```
 ScriptableObject
- └─ GameEvent                      event with OnRaised observable
-     └─ GameEvent<T>               typed event with data payload
-         └─ ScriptableVariable     abstract base
-             └─ ScriptableVariable<T>   Value, OnValueChanged, SetValueWithoutNotify
+ └─ GameEvent                         event with OnRaised observable
+     └─ GameEvent<T>                  typed event with data payload
+         └─ ScriptableVariable        abstract base
+             └─ ScriptableVariable<T>    Value, OnValueChanged, SetValueWithoutNotify
                   ├─ NumericalVariable<T> : INumericalVariable
                   │   ├─ FloatVariable
                   │   └─ IntVariable
@@ -501,38 +598,57 @@ ScriptableObject
                   ├─ DoubleVariable
                   └─ ... (13 more)
 
- └─ ConditionGraph                 visual condition logic
-     └─ ConditionNode [SerializeReference]
-         ├─ ComparisonNode
-         ├─ BoolCheckNode
-         ├─ AndNode / OrNode / NotNode
-         └─ RangeNode
+ └─ SequenceNode                      base for sequences (status + audio)
+     ├─ Sequence                      linear step execution
+     └─ BranchingSequence             conditional step transitions
+
+ └─ Step                              atomic unit in a sequence
 
 MonoBehaviour
- ├─ VariableBinder<T>              read, subscribe / poll
- │   └─ NumericalVariableBinder    INumericalVariable specialization
- ├─ TwoWayVariableBinder<T>        read + write, recursion guard
- ├─ VariableBinder<T1,T2>          multi-variable observer
- ├─ VariableBinder<T1,T2,T3>       multi-variable observer
- ├─ VariableDriver<T>              write, silent option
+ ├─ VariableBinder<T>                 read, subscribe / poll
+ │   └─ NumericalVariableBinder       INumericalVariable specialization
+ ├─ TwoWayVariableBinder<T>           read + write, recursion guard
+ ├─ VariableBinder<T1,T2>             multi-variable observer
+ ├─ VariableBinder<T1,T2,T3>          multi-variable observer
+ ├─ VariableDriver<T>                 write, silent option
  │    ├─ InputActionFloatDriver
  │    ├─ CollisionDriver / TriggerDriver
  │    ├─ TimerDriver / CooldownDriver
  │    └─ ... (8 more)
- ├─ ConditionListener              condition → UnityEvent bridge
- ├─ VariableResetter               bulk reset on triggers
- ├─ EventRelay                     event forwarding with delay
- ├─ VariableLogger                 debug logging
- └─ VariableDebugOverlay           runtime HUD
+ ├─ SequenceBehaviour                 runs a Sequence in the scene
+ ├─ BranchingSequenceBehaviour        runs a BranchingSequence in the scene
+ ├─ AbstractSequenceAction            base for step completion logic
+ │    ├─ AnimationAction
+ │    ├─ EventAction
+ │    ├─ TriggerAction
+ │    ├─ ProximityAction
+ │    ├─ MultiConditionAction
+ │    └─ SequenceControlAction
+ ├─ StepEventListener                 step status → UnityEvent bridge
+ ├─ MultiStepListener                 multi-step observer
+ ├─ VariableResetter                  bulk reset on triggers
+ ├─ EventRelay                        event forwarding with delay
+ ├─ VariableLogger                    debug logging
+ └─ VariableDebugOverlay              runtime HUD
 
 ITweenable
  ├─ TweenableFloat
  ├─ TweenableColor
  ├─ TweenableVector2 / Vector3
  ├─ TweenableQuaternion
- ├─ TweenableNumerical             bridges INumericalVariable
+ ├─ TweenableNumerical                bridges INumericalVariable
  └─ TransformTweenable
 ```
+
+---
+
+## Detailed Documentation
+
+For in-depth guides, see the `Documentation~` folder (ignored by Unity's asset importer):
+
+- [Sequencing System](Documentation~/SequencingSystem.md) — Full guide to sequences, steps, actions, branching, and the graph editor
+- [ScriptableVariable Reference](Documentation~/ScriptableVariable.md) — Variable API and type reference
+- [Test Plan](Documentation~/TEST_PLAN.md) — Test suite structure and coverage
 
 ---
 
