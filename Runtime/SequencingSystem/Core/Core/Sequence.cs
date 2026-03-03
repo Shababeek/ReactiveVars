@@ -22,6 +22,9 @@ namespace Shababeek.Sequencing
         [Tooltip("Audio volume level for the sequence (0 to 1).")]
         [SerializeField, Range(0, 1)] private float volume = .5f;
 
+        [Tooltip("Optional FloatVariable that is automatically driven with sequence progress (0 to 1).")]
+        [SerializeField] private FloatVariable progress;
+
         [HideInInspector] [SerializeField] private List<Step> steps;
 
         [SerializeField, ReadOnly] private int currentStepIndex;
@@ -41,6 +44,15 @@ namespace Shababeek.Sequencing
         /// Gets the list of all steps in the sequence.
         /// </summary>
         public List<Step> Steps => steps;
+
+        /// <summary>
+        /// Gets or sets the progress variable driven by this sequence.
+        /// </summary>
+        public FloatVariable Progress
+        {
+            get => progress;
+            set => progress = value;
+        }
 
         private void Awake()
         {
@@ -77,6 +89,7 @@ namespace Shababeek.Sequencing
                 step.Initialize(this);
             }
 
+            UpdateProgress();
             steps[currentStepIndex].Begin();
             Raise(SequenceStatus.Started);
         }
@@ -85,6 +98,9 @@ namespace Shababeek.Sequencing
         {
             if (steps[currentStepIndex] != step) return;
             currentStepIndex++;
+
+            UpdateProgress();
+
             if (currentStepIndex < steps.Count)
             {
                 steps[currentStepIndex].Begin();
@@ -113,6 +129,7 @@ namespace Shababeek.Sequencing
             if (currentStepIndex <= 0) return;
             steps[currentStepIndex].Raise(SequenceStatus.Inactive);
             currentStepIndex--;
+            UpdateProgress();
             steps[currentStepIndex].Begin();
         }
 
@@ -129,11 +146,18 @@ namespace Shababeek.Sequencing
             currentStepIndex = 0;
             status = SequenceStatus.Inactive;
             initialized = false;
+            if (progress != null) progress.Value = 0f;
         }
 
         /// <summary>
         /// Initializes the sequence by creating an empty steps list.
         /// </summary>
         public void Init() => steps = new List<Step>();
+
+        private void UpdateProgress()
+        {
+            if (progress == null || steps == null || steps.Count == 0) return;
+            progress.Value = (float)currentStepIndex / steps.Count;
+        }
     }
 }
