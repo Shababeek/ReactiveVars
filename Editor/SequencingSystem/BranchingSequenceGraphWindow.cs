@@ -12,7 +12,9 @@ namespace Shababeek.Sequencing.Editors
     /// </summary>
     public class BranchingSequenceGraphWindow : EditorWindow
     {
+        [Tooltip("The BranchingSequence asset to display and edit in the graph window.")]
         [SerializeField] private BranchingSequence sequence;
+
         private BranchingSequenceGraphView _graphView;
         private Step _lastCurrentStep;
         private bool _wasPlayingAndStarted;

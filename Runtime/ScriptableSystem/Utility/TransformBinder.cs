@@ -10,31 +10,67 @@ namespace Shababeek.ReactiveVars
     public class TransformBinder : MonoBehaviour
     {
         [Header("Position")]
+        [Tooltip("Enable position binding from the variable.")]
         [SerializeField] private bool bindPosition;
+
+        [Tooltip("The Vector3Variable to bind to the position.")]
         [SerializeField] private Vector3Variable positionVariable;
+
+        [Tooltip("If true, use localPosition; if false, use world position.")]
         [SerializeField] private bool useLocalPosition;
+
+        [Tooltip("Offset added to the position variable value.")]
         [SerializeField] private Vector3 positionOffset;
 
         [Header("Rotation")]
+        [Tooltip("Enable rotation binding from the variable.")]
         [SerializeField] private bool bindRotation;
+
+        [Tooltip("Mode for rotation binding (Euler, Quaternion, or Direction2D).")]
         [SerializeField] private RotationMode rotationMode = RotationMode.Euler;
+
+        [Tooltip("The Vector3Variable for Euler angle rotation.")]
         [SerializeField] private Vector3Variable eulerVariable;
+
+        [Tooltip("The QuaternionVariable for quaternion rotation.")]
         [SerializeField] private QuaternionVariable quaternionVariable;
+
+        [Tooltip("The Vector2Variable for 2D direction-based rotation.")]
         [SerializeField] private Vector2Variable directionVariable;
+
+        [Tooltip("The plane for 2D direction rotation (XY, XZ, or YZ).")]
         [SerializeField] private RotationPlane directionPlane = RotationPlane.XY;
+
+        [Tooltip("Angle offset applied to direction-based rotation (degrees).")]
         [SerializeField] private float angleOffset;
+
+        [Tooltip("If true, use localRotation; if false, use world rotation.")]
         [SerializeField] private bool useLocalRotation = true;
 
         [Header("Scale")]
+        [Tooltip("Enable scale binding from the variable.")]
         [SerializeField] private bool bindScale;
+
+        [Tooltip("Scale mode (Vector3 for per-axis, Uniform for single multiplier).")]
         [SerializeField] private ScaleMode scaleMode = ScaleMode.Uniform;
+
+        [Tooltip("The Vector3Variable for per-axis scale.")]
         [SerializeField] private Vector3Variable scaleVector;
+
+        [Tooltip("The ScriptableVariable for uniform scale multiplier.")]
         [SerializeField] private ScriptableVariable uniformScale;
+
+        [Tooltip("Base scale applied when using uniform scale mode.")]
         [SerializeField] private Vector3 baseScale = Vector3.one;
+
+        [Tooltip("Minimum allowed scale value.")]
         [SerializeField] private float minScale = 0.001f;
 
         [Header("Interpolation")]
+        [Tooltip("Enable smooth interpolation of position, rotation, and scale.")]
         [SerializeField] private bool smooth;
+
+        [Tooltip("Interpolation speed (higher = faster).")]
         [SerializeField] private float speed = 5f;
 
         private CompositeDisposable _disposable;

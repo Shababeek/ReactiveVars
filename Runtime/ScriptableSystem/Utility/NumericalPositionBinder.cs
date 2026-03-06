@@ -8,20 +8,34 @@ namespace Shababeek.ReactiveVars
     [AddComponentMenu("Shababeek/ReactiveVars/Binders/Numerical Position Binder")]
     public class NumericalPositionBinder : NumericalVariableBinder
     {
+        [Tooltip("The numerical ScriptableVariable to drive the position.")]
         [SerializeField] private ScriptableVariable variable;
 
         [Header("Positions")]
+        [Tooltip("Starting position (0-value in the range).")]
         [SerializeField] private Vector3 startPosition;
+
+        [Tooltip("Ending position (max-value in the range).")]
         [SerializeField] private Vector3 endPosition;
+
+        [Tooltip("If true, use localPosition; if false, use world position.")]
         [SerializeField] private bool useLocalPosition = true;
 
         [Header("Value Range")]
+        [Tooltip("Minimum value in the range (maps to start position).")]
         [SerializeField] private float minValue = 0f;
+
+        [Tooltip("Maximum value in the range (maps to end position).")]
         [SerializeField] private float maxValue = 1f;
 
         [Header("Interpolation")]
+        [Tooltip("Enable smooth position interpolation.")]
         [SerializeField] private bool smooth;
+
+        [Tooltip("Speed of interpolation (higher = faster).")]
         [SerializeField] private float speed = 5f;
+
+        [Tooltip("Animation curve for non-linear interpolation.")]
         [SerializeField] private AnimationCurve curve = AnimationCurve.Linear(0, 0, 1, 1);
 
         private Vector3 _targetPosition;

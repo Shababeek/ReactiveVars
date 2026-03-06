@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Shababeek.ReactiveVars.Editors
 {
+    /// <summary>Custom editor for Rigidbody3DBinder with dynamic input mode visualization.</summary>
     [CustomEditor(typeof(Rigidbody3DBinder))]
     public class Rigidbody3DBinderEditor : Editor
     {

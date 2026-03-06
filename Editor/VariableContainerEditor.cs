@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Shababeek.ReactiveVars.Editors
 {
+    /// <summary>Custom editor for VariableContainer with reorderable variable and event lists.</summary>
     [CustomEditor(typeof(VariableContainer))]
     public class VariableContainerEditor : Editor
     {

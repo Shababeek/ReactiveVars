@@ -10,6 +10,7 @@ namespace Shababeek.ReactiveVars
     [RequireComponent(typeof(TMP_InputField))]
     public class InputFieldBinder : TwoWayVariableBinder<TextVariable>
     {
+        [Tooltip("The TextVariable to bind to the input field.")]
         [SerializeField] private TextVariable textVariable;
 
         private TMP_InputField _inputField;

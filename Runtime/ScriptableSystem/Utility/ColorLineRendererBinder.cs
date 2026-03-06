@@ -9,14 +9,21 @@ namespace Shababeek.ReactiveVars
     [RequireComponent(typeof(LineRenderer))]
     public class ColorLineRendererBinder : VariableBinder<ColorVariable>
     {
+        [Tooltip("The ColorVariable to bind to the LineRenderer.")]
         [SerializeField] private ColorVariable colorVariable;
 
         [Header("Target")]
+        [Tooltip("Apply color to the start of the line.")]
         [SerializeField] private bool setStartColor = true;
+
+        [Tooltip("Apply color to the end of the line.")]
         [SerializeField] private bool setEndColor = true;
 
         [Header("Interpolation")]
+        [Tooltip("Enable smooth color interpolation.")]
         [SerializeField] private bool smooth = false;
+
+        [Tooltip("Speed of color interpolation.")]
         [SerializeField] private float speed = 5f;
 
         private LineRenderer _lineRenderer;

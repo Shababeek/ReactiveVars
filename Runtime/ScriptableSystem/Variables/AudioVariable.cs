@@ -4,12 +4,20 @@ using UnityEngine;
 
 namespace Shababeek.ReactiveVars
 {
+    /// <summary>Game event that plays audio clips with configurable volume, pitch, and loop settings.</summary>
     [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/AudioVariable")]
     public class AudioVariable : GameEvent
     {
+        [Tooltip("The audio clip to play.")]
         [SerializeField] private AudioClip clip;
+
+        [Tooltip("Volume level for playback (0 to 1).")]
         [SerializeField][Range(0f, 1f)] private float volume = 1f;
+
+        [Tooltip("Pitch multiplier for playback (-3 to 3).")]
         [SerializeField][Range(-3f, 3f)] private float pitch = 1f;
+
+        [Tooltip("Whether the audio should loop continuously.")]
         [SerializeField] private bool loop = false;
 
         private Subject<AudioVariable> _onAudioRaised;

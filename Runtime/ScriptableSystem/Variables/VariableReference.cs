@@ -11,10 +11,18 @@ namespace Shababeek.ReactiveVars
     [Serializable]
     public class VariableReference<T>
     {
+        [Tooltip("The referenced ScriptableVariable (used when useConstant is false).")]
         [SerializeField] private ScriptableVariable<T> variable;
+
+        [Tooltip("If true, use the constant value; if false, use the variable reference.")]
         [SerializeField] private bool useConstant;
+
+        [Tooltip("The constant value to use when useConstant is true.")]
         [SerializeField] private T constantValue;
+
+        [Tooltip("Display name for the reference.")]
         [SerializeField] private string name;
+
         private IDisposable _subscription;
         private readonly Subject<T> _onValueChangedSubject = new();
 

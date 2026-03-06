@@ -24,26 +24,42 @@ namespace Shababeek.ReactiveVars
     public class Rigidbody2DBinder : MonoBehaviour
     {
         [Header("Target")]
+        [Tooltip("The Rigidbody2D to apply velocity/forces to.")]
         [SerializeField] private Rigidbody2D rb;
 
         [Header("Input Mode")]
+        [Tooltip("Input mode for velocity (Vector2, TwoFloats, or FloatDirection).")]
         [SerializeField] private Velocity2DInputMode inputMode = Velocity2DInputMode.Vector2;
 
         [Header("Vector2 Input")]
+        [Tooltip("The Vector2Variable for velocity input.")]
         [SerializeField] private Vector2Variable vector2Input;
 
         [Header("Float Inputs (for TwoFloats mode)")]
+        [Tooltip("Float variable for X velocity component.")]
         [SerializeField] private FloatVariable floatX;
+
+        [Tooltip("Float variable for Y velocity component.")]
         [SerializeField] private FloatVariable floatY;
 
         [Header("Direction Input (for FloatDirection mode)")]
+        [Tooltip("Float variable for magnitude in direction mode.")]
         [SerializeField] private FloatVariable floatMagnitude;
+
+        [Tooltip("Direction vector for FloatDirection mode.")]
         [SerializeField] private Vector2 direction = Vector2.right;
 
         [Header("Application")]
+        [Tooltip("How to apply velocity (SetVelocity, AddForce, or AddForceImpulse).")]
         [SerializeField] private Velocity2DApplicationMode applicationMode = Velocity2DApplicationMode.SetVelocity;
+
+        [Tooltip("If true, apply in local space; if false, use world space.")]
         [SerializeField] private bool useLocalSpace = false;
+
+        [Tooltip("Multiplier for the velocity value.")]
         [SerializeField] private float multiplier = 1f;
+
+        [Tooltip("If true, continuously apply velocity; if false, apply only once per change.")]
         [SerializeField] private bool continuous = true;
 
         private CompositeDisposable _disposable;

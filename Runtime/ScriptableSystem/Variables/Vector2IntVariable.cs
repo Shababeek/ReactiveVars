@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Shababeek.ReactiveVars
 {
+    /// <summary>Scriptable variable that stores a Vector2Int value with arithmetic operator support.</summary>
     [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variables/Vector2IntVariable")]
     public class Vector2IntVariable : ScriptableVariable<Vector2Int>
     {
@@ -96,6 +97,7 @@ namespace Shababeek.ReactiveVars
         public override int GetHashCode() => base.GetHashCode();
     }
 
+    /// <summary>A reference that can point to either a Vector2IntVariable or use a constant Vector2Int value.</summary>
     public class Vector2IntReference : VariableReference<Vector2Int>
     {
     }

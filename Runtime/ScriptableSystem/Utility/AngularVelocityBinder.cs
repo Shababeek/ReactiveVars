@@ -18,26 +18,42 @@ namespace Shababeek.ReactiveVars
     public class AngularVelocityBinder : MonoBehaviour
     {
         [Header("Target")]
+        [Tooltip("The 3D Rigidbody to apply angular velocity to.")]
         [SerializeField] private Rigidbody rb3D;
+
+        [Tooltip("The 2D Rigidbody to apply angular velocity to.")]
         [SerializeField] private Rigidbody2D rb2D;
 
         [Header("Input Mode")]
+        [Tooltip("Input mode for angular velocity (Vector3, Vector2XY, Vector2XZ, FloatSingleAxis).")]
         [SerializeField] private AngularInputMode inputMode = AngularInputMode.Vector3;
 
         [Header("Vector3 Input")]
+        [Tooltip("The Vector3Variable for angular velocity input.")]
         [SerializeField] private Vector3Variable vector3Input;
 
         [Header("Vector2 Input")]
+        [Tooltip("The Vector2Variable for angular velocity input.")]
         [SerializeField] private Vector2Variable vector2Input;
 
         [Header("Float Input")]
+        [Tooltip("The FloatVariable for single-axis angular velocity.")]
         [SerializeField] private FloatVariable floatInput;
+
+        [Tooltip("The axis to rotate around in FloatSingleAxis mode.")]
         [SerializeField] private Vector3 rotationAxis = Vector3.up;
 
         [Header("Application")]
+        [Tooltip("If true, set angular velocity; if false, apply as torque.")]
         [SerializeField] private bool setVelocity = true;
+
+        [Tooltip("If true, apply in local space; if false, use world space.")]
         [SerializeField] private bool useLocalSpace = false;
+
+        [Tooltip("Multiplier for the angular velocity value.")]
         [SerializeField] private float multiplier = 1f;
+
+        [Tooltip("If true, continuously apply angular velocity; if false, apply only once per change.")]
         [SerializeField] private bool continuous = true;
 
         private CompositeDisposable _disposable;

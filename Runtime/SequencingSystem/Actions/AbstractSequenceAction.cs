@@ -12,7 +12,10 @@ namespace Shababeek.Sequencing
     /// </summary>
     public abstract class AbstractSequenceAction : MonoBehaviour
     {
+        [Tooltip("The step associated with this action.")]
         [SerializeField] private Step step;
+
+        [Tooltip("Whether this action has been started.")]
         [ReadOnly][SerializeField] private bool started;
         
 

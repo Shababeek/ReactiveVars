@@ -10,6 +10,7 @@ namespace Shababeek.ReactiveVars
     [RequireComponent(typeof(TMP_Dropdown))]
     public class DropdownBinder : TwoWayVariableBinder<IntVariable>
     {
+        [Tooltip("The IntVariable to bind to the dropdown's selected index.")]
         [SerializeField] private IntVariable dropdownValue;
 
         private TMP_Dropdown _dropdown;

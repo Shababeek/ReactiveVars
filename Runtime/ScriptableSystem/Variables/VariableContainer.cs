@@ -12,7 +12,10 @@ namespace Shababeek.ReactiveVars
     [CreateAssetMenu(menuName = "Shababeek/ReactiveVars/Variable Container")]
     public class VariableContainer : ScriptableObject
     {
+        [Tooltip("List of ScriptableVariables stored in this container.")]
         [SerializeField] private List<ScriptableVariable> variables = new();
+
+        [Tooltip("List of GameEvents stored in this container.")]
         [SerializeField] private List<GameEvent> events = new();
 
         public IReadOnlyList<ScriptableVariable> Variables => variables;

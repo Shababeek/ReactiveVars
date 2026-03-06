@@ -10,7 +10,10 @@ namespace Shababeek.ReactiveVars
     [RequireComponent(typeof(ScrollRect))]
     public class ScrollRectBinder : TwoWayVariableBinder<FloatVariable>
     {
+        [Tooltip("The FloatVariable to bind to the scroll position (0 to 1).")]
         [SerializeField] private FloatVariable scrollPosition;
+
+        [Tooltip("If true, use horizontal scroll; if false, use vertical scroll.")]
         [SerializeField] private bool useHorizontal = false;
 
         private ScrollRect _scrollRect;
