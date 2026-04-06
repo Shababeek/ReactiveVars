@@ -140,44 +140,87 @@ namespace Shababeek.ReactiveVars
             public string value;
         }
 
-        /// <summary>
-        /// Saves all variable values to a JSON file.
-        /// </summary>
-        /// <param name="filePath">Full path to save file (including .json extension).</param>
-        /// <returns>True if save was successful.</returns>
+        /// <summary>Serializes all variable values to a data object.</summary>
+        public VariableContainerData ToData()
+        {
+            var data = new VariableContainerData
+            {
+                containerName = name,
+                savedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+            };
+
+            foreach (var variable in variables)
+            {
+                if (variable == null) continue;
+
+                data.variables.Add(new VariableData
+                {
+                    name = variable.name,
+                    type = variable.GetType().Name,
+                    value = SerializeVariableValue(variable)
+                });
+            }
+
+            return data;
+        }
+
+        /// <summary>Restores variable values from a data object.</summary>
+        public bool FromData(VariableContainerData data)
+        {
+            if (data == null || data.variables == null)
+            {
+                Debug.LogError("Invalid container data");
+                return false;
+            }
+
+            int loadedCount = 0;
+            foreach (var varData in data.variables)
+            {
+                var variable = GetVariable(varData.name);
+                if (variable == null)
+                {
+                    Debug.LogWarning($"Variable '{varData.name}' not found in container, skipping");
+                    continue;
+                }
+
+                if (DeserializeVariableValue(variable, varData.value))
+                    loadedCount++;
+            }
+
+            return loadedCount > 0;
+        }
+
+        /// <summary>Serializes all variable values to a JSON string.</summary>
+        public string ToJson(bool prettyPrint = false)
+        {
+            return JsonUtility.ToJson(ToData(), prettyPrint);
+        }
+
+        /// <summary>Restores variable values from a JSON string.</summary>
+        public bool FromJson(string json)
+        {
+            try
+            {
+                var data = JsonUtility.FromJson<VariableContainerData>(json);
+                return FromData(data);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Failed to deserialize VariableContainer '{name}': {e.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>Saves all variable values to a JSON file.</summary>
         public bool SaveToFile(string filePath)
         {
             try
             {
-                var data = new VariableContainerData
-                {
-                    containerName = name,
-                    savedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-                };
+                string json = ToJson(true);
 
-                foreach (var variable in variables)
-                {
-                    if (variable == null) continue;
-
-                    var varData = new VariableData
-                    {
-                        name = variable.name,
-                        type = variable.GetType().Name
-                    };
-
-                    // Serialize value based on type
-                    varData.value = SerializeVariableValue(variable);
-                    data.variables.Add(varData);
-                }
-
-                string json = JsonUtility.ToJson(data, true);
-
-                // Ensure directory exists
                 string directory = Path.GetDirectoryName(filePath);
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-                {
                     Directory.CreateDirectory(directory);
-                }
 
                 File.WriteAllText(filePath, json);
                 Debug.Log($"VariableContainer '{name}' saved to: {filePath}");
@@ -190,11 +233,7 @@ namespace Shababeek.ReactiveVars
             }
         }
 
-        /// <summary>
-        /// Loads variable values from a JSON file.
-        /// </summary>
-        /// <param name="filePath">Full path to save file.</param>
-        /// <returns>True if load was successful.</returns>
+        /// <summary>Loads variable values from a JSON file.</summary>
         public bool LoadFromFile(string filePath)
         {
             try
@@ -206,32 +245,11 @@ namespace Shababeek.ReactiveVars
                 }
 
                 string json = File.ReadAllText(filePath);
-                var data = JsonUtility.FromJson<VariableContainerData>(json);
+                bool result = FromJson(json);
 
-                if (data == null || data.variables == null)
-                {
-                    Debug.LogError("Invalid save data format");
-                    return false;
-                }
-
-                int loadedCount = 0;
-                foreach (var varData in data.variables)
-                {
-                    var variable = GetVariable(varData.name);
-                    if (variable == null)
-                    {
-                        Debug.LogWarning($"Variable '{varData.name}' not found in container, skipping");
-                        continue;
-                    }
-
-                    if (DeserializeVariableValue(variable, varData.value))
-                    {
-                        loadedCount++;
-                    }
-                }
-
-                Debug.Log($"VariableContainer '{name}' loaded from: {filePath} ({loadedCount}/{data.variables.Count} variables)");
-                return true;
+                if (result)
+                    Debug.Log($"VariableContainer '{name}' loaded from: {filePath}");
+                return result;
             }
             catch (Exception e)
             {
