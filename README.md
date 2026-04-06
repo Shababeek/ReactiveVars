@@ -73,6 +73,24 @@ In-depth guides for specific systems.
 
 ---
 
+## Key types (source)
+
+| Type | Role | Source |
+|------|------|--------|
+| `ScriptableVariable` / `ScriptableVariable<T>` | Shared asset value, `OnValueChanged`, raise | [ScriptableVariable.cs](Runtime/ScriptableSystem/Variables/ScriptableVariable.cs) |
+| `VariableReference<T>` | Inspector: constant or variable | [VariableReference.cs](Runtime/ScriptableSystem/Variables/VariableReference.cs) |
+| `VariableContainer` | Groups variables/events, bulk ops, save/load | [VariableContainer.cs](Runtime/ScriptableSystem/Variables/VariableContainer.cs) |
+| `GameEvent` / `GameEvent<T>` | Fire-and-forget signals | [GameEvent.cs](Runtime/ScriptableSystem/Events/GameEvent.cs) |
+| `VariableBinder<T>` | Push variable → component | [VariableBinder.cs](Runtime/ScriptableSystem/Utility/VariableBinder.cs) |
+| `VariableDriver<T>` | Source → variable | [VariableDriver.cs](Runtime/ScriptableSystem/Utility/VariableDriver.cs) |
+| `Sequence` | Linear ordered steps | [Sequence.cs](Runtime/SequencingSystem/Core/Core/Sequence.cs) |
+| `BranchingSequence` | Steps with conditional transitions | [BranchingSequence.cs](Runtime/SequencingSystem/Core/Core/BranchingSequence.cs) |
+| `ITweenable` / tweenables | Smooth value interpolation | [ITweenable.cs](Runtime/TweenSystem/ITweenable.cs) |
+
+API detail for variables: [ScriptableVariable.md](Documentation~/ScriptableVariable.md).
+
+---
+
 ## 🎯 Quick Reference
 
 ### Variable Types (23 Total)
@@ -98,7 +116,7 @@ In-depth guides for specific systems.
 
 **Add Binder to UI:**
 1. Select a UI element (TextMeshPro, Image, etc.)
-2. Add component: **[BinferType]Binder** (e.g., NumericalTextBinder)
+2. Add component: **[BinderType]Binder** (e.g., NumericalTextBinder)
 3. Assign variable in inspector
 
 **Add Driver:**
@@ -186,8 +204,11 @@ https://github.com/Ahmadabobakr/ReactiveVars.git
 
 **Via local folder** — Clone or copy the `ReactiveVars` folder into your project's `Packages` directory.
 
-**Dependencies:** UniRx, TextMeshPro (auto-resolved).
-**Optional:** Unity Input System — input action drivers are enabled automatically when the package is detected.
+**Dependencies:** Declared in `package.json`: **UniRx** ([`com.neuecc.unirx`](https://github.com/neuecc/UniRx)) and **TextMeshPro**. Unity Package Manager resolves them when you add this package from Git or from a local folder that includes the manifest.
+
+**Manual UniRx:** If you embed only the Runtime sources without the package manifest, add UniRx via *Add package from git URL*: `https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts`
+
+**Optional:** Unity Input System — input action drivers compile when the Input System package is present (`REACTIVE_VARS_INPUT_SYSTEM`). See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
@@ -365,6 +386,7 @@ VariableContainer                      organizes variables for save/load
 
 ## Getting Help
 
+- **Contributing:** [CONTRIBUTING.md](CONTRIBUTING.md) — assemblies, tests, optional defines
 - **Documentation:** Start with [Getting Started Guide](Documentation~/GettingStarted.md)
 - **Troubleshooting:** Check troubleshooting sections in relevant guides
 - **Bug Reports:** [GitHub Issues](https://github.com/Ahmadabobakr/ReactiveVars/issues)

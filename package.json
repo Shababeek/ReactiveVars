@@ -5,6 +5,7 @@
     "description": "A ScriptableObject-based reactive variable system for Unity. Includes 23 variable types, 50+ binders (read), 12 drivers (write) with Input System support, a visual condition graph editor, tween system with AnimationCurve easing, runtime debug overlay, and custom editor tooling.",
     "unity": "6000.0",
     "dependencies": {
+        "com.neuecc.unirx": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
         "com.unity.textmeshpro": "3.0.6"
     },
     "author": {
