@@ -42,6 +42,9 @@ namespace Shababeek.ReactiveVars
         /// </remarks>
         public IObservable<T> OnValueChanged => _onValueChanged;
 
+        /// <summary>Gets the value this variable held before the most recent change.</summary>
+        public T PreviousValue { get; private set; }
+
         /// <summary>
         /// Gets or sets the current value of this variable.
         /// </summary>
@@ -54,6 +57,7 @@ namespace Shababeek.ReactiveVars
             get => value;
             set
             {
+                PreviousValue = this.value;
                 this.value = value;
                 Raise();
             }
@@ -147,7 +151,6 @@ namespace Shababeek.ReactiveVars
             return Value;
         }
 
-
         public void Reset(T value)
         {
             this.value = value;
@@ -171,19 +174,16 @@ namespace Shababeek.ReactiveVars
         /// <summary>
         /// Returns a string representation of the variable's value.
         /// </summary>
-        /// <returns>A string representation of the value</returns>
         public abstract override string ToString();
 
         /// <summary>
         /// Sets the variable's value using an object parameter.
         /// </summary>
-        /// <param name="value">The object value to set</param>
         public abstract void SetValue(object value);
 
         /// <summary>
         /// Gets the variable's current value as an object.
         /// </summary>
-        /// <returns>The current value as an object</returns>
         public abstract object GetValue();
     }
 }
