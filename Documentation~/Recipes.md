@@ -6,6 +6,8 @@ Short, repeatable setups with **minimal or no code**. Menu paths use **Create > 
 
 **Related:** [FAQ](FAQ.md)
 
+**Tip:** Use **Shababeek > ReactiveVars > Reactive Vars Window** to watch and edit variable values across the project while in Play mode ([Reference.md](Reference.md)).
+
 ---
 
 ## 1. Health value on HUD text

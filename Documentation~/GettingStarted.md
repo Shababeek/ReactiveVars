@@ -69,6 +69,10 @@ Press Play. Every time you press **Space**, the health decreases and the UI text
 
 **That's the entire pattern.** Variables are read/written. Binders display them. Drivers feed data in. No manual event wiring needed.
 
+### Browse and tweak values in the editor
+
+Open **Shababeek > ReactiveVars > Reactive Vars Window** to see variables (and events) in one place: search, filter by type, and optionally limit to assets referenced in the current scene (**Scene Refs Only**). During **Play mode**, you can change many values directly in the window—useful for tuning UI and gameplay without hunting each asset in the Project window.
+
 ---
 
 ## Core Concepts

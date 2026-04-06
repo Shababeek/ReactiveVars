@@ -34,6 +34,11 @@
 
 - [ScriptableVariable.md](ScriptableVariable.md) and [Reference.md](Reference.md).
 
+## Where can I see all variables and their values at once?
+
+- In the Editor: **Shababeek > ReactiveVars > Reactive Vars Window** ([Reference.md](Reference.md)). Uncheck **Scene Refs Only** if you need every variable in the project, not just those referenced by open scenes.
+- In a build / Game view: add **VariableDebugOverlay** to a scene object for a runtime HUD (see Runtime utilities in [Reference.md](Reference.md)).
+
 ---
 
 **Next:** [Getting Started](GettingStarted.md) if you are new; [Binders](Binders.md) for component details.

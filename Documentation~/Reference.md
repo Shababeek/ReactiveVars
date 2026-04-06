@@ -15,6 +15,25 @@ Technical overview: source map, architecture, quick lookup tables, and links to 
 
 The Runtime asmdef references **UniRx**, **TextMeshPro**, and optionally the **Input System** (scripting define `REACTIVE_VARS_INPUT_SYSTEM`). See [CONTRIBUTING.md](../CONTRIBUTING.md) in the package root.
 
+## Reactive Vars window (editor)
+
+Open **Shababeek > ReactiveVars > Reactive Vars Window** — implementation: [ReactiveVarsEditorWindow.cs](../Editor/ReactiveVarsEditorWindow.cs).
+
+| Area | Purpose |
+|------|---------|
+| **Variables** / **Events** tabs | Browse scriptable variables (all types that inherit `ScriptableVariable`) or plain `GameEvent` assets |
+| **Search** | Filter by name |
+| **Type** | On Variables tab: filter by Int, Float, Bool, Text, Vector2/3, Color, Other |
+| **Scene Refs Only** | When enabled (default), only lists assets referenced by the currently open scenes — good for focusing on what the level uses |
+| **Refresh** | Rescans the project and scene references |
+| **Foldouts** | Variables/events are grouped under their parent asset (e.g. variable container main asset); **Select** pings the parent in the Project window |
+| **→** | Ping the individual variable or event |
+| **Value column (Play mode)** | For many scalar types, edit **int / float / bool / string** live. Others show read-only text or fields depending on type |
+| **Fire** (Events tab, Play mode) | Calls `Raise()` on that event |
+| **Dot (●)** | That asset is referenced from the open scenes |
+
+This is an **editor-only** tool. For a **runtime** on-screen variable list, use **VariableDebugOverlay** ([VariableDebugOverlay.cs](../Runtime/ScriptableSystem/Utility/VariableDebugOverlay.cs)).
+
 ## Key types (source)
 
 
@@ -36,7 +55,7 @@ Full member tables: [ScriptableVariable.md](ScriptableVariable.md).
 ## UniRx usage
 
 - Subscribe in `OnEnable`, store `IDisposable`, **dispose in `OnDisable`** to avoid leaks across scene unloads.
-- `OnValueChanged` is a hot observable: pair `**SetValueWithoutNotify**` on the write side with **Poll** mode on binders when updating every frame.
+- `OnValueChanged` is a hot observable: pair `SetValueWithoutNotify` on the write side with **Poll** mode on binders when updating every frame.
 
 ## Architecture
 
@@ -178,6 +197,8 @@ Input System drivers require the [Input System package](https://docs.unity3d.com
 **Binder:** Select target object → **Add Component** → `*Binder` → assign variable.
 
 **Driver:** Select source object → **Add Component** → `*Driver` → assign target variable.
+
+**Runtime debug HUD:** **VariableDebugOverlay** — add to a scene object to show variable values on screen in play mode (not the same as the **Reactive Vars** editor window above).
 
 ---
 

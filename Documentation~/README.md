@@ -23,6 +23,14 @@ Optional: add a **TimerDriver** and another binder to the same float for a count
 
 ---
 
+## Reactive Vars window (editor)
+
+Open **Shababeek > ReactiveVars > Reactive Vars Window** for a dockable **Reactive Vars** view. It lists **Variables** and **Events** from your project, grouped by asset, with search, type filter, and **Scene Refs Only** (default on: only assets referenced in the open scenes). In **Play mode**, edit **int / float / bool / string** values inline; the **Events** tab can **Fire** events for quick testing. Turn off **Scene Refs Only** to browse everything. See [Glossary](Glossary.md) and [Reference.md](Reference.md) for details.
+
+Runtime on-screen listing (play mode only): **VariableDebugOverlay** component — separate from this editor window.
+
+---
+
 ## Table of contents
 
 

@@ -9,9 +9,9 @@ using Object = UnityEngine.Object;
 namespace Shababeek.Interactions.Editors
 {
     /// <summary>
-    /// Editor window for viewing and managing ScriptableVariables and GameEvents in the project.
+    /// Reactive Vars editor window: browse project variables and events, inspect values in Play mode.
     /// </summary>
-    public class ScriptableSystemEditorWindow : EditorWindow
+    public class ReactiveVarsEditorWindow : EditorWindow
     {
         private enum Tab
         {
@@ -52,10 +52,10 @@ namespace Shababeek.Interactions.Editors
         private double _lastRefreshTime;
         private const double RefreshCooldown = 0.5;
 
-        [MenuItem("Shababeek/ReactiveVars Overview MenuScriptable System Window")]
+        [MenuItem("Shababeek/ReactiveVars/Reactive Vars Window")]
         public static void ShowWindow()
         {
-            var window = GetWindow<ScriptableSystemEditorWindow>("Scriptable System");
+            var window = GetWindow<ReactiveVarsEditorWindow>("Reactive Vars");
             window.minSize = new Vector2(400, 300);
         }
 

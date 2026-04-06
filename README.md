@@ -1,13 +1,7 @@
-
-
 # ReactiveVars
 
 A ScriptableObject-based reactive variable system for Unity.  
 Decouple your game systems. Wire everything in the inspector.
-
-
-
-
 
 ---
 
@@ -77,7 +71,7 @@ More step-by-step setups: [Documentation~/Recipes.md](Documentation~/Recipes.md)
 
 ## Features (summary)
 
-Variables (many types), 50+ binders, drivers (input, physics, timers, …), tween system, game events, linear and **branching** sequences with graph authoring, variable containers with JSON persistence, runtime debug overlay, editor tooling.
+Variables (many types), 50+ binders, drivers (input, physics, timers, …), tween system, game events, linear and **branching** sequences with graph authoring, variable containers with JSON persistence, **Reactive Vars** editor window (browse variables/events, edit values in Play mode), **VariableDebugOverlay** for runtime HUDs.
 
 ---
 
