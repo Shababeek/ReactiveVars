@@ -1,5 +1,7 @@
 # Variable Containers — Organize and Persist Variables
 
+**Navigation:** [Documentation home](README.md) · **Previous:** [TweenSystem.md](TweenSystem.md) · **Next:** [SequencingSystem.md](SequencingSystem.md)
+
 Variable Containers let you group related variables and events into a single asset for easy organization, bulk operations, and save/load functionality.
 
 ---

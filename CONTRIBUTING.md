@@ -10,7 +10,7 @@ Thank you for helping improve ReactiveVars. This document covers how the package
 | `Editor/` | Inspectors, graph tooling (`Shababeek.ReactiveVars.Editor`) |
 | `Tests/Runtime/` | Play Mode tests (where used) |
 | `Tests/Editor/` | Edit Mode tests (`Shababeek.ReactiveVars.EditorTests`) |
-| `Documentation~/` | User-facing Markdown (Unity hides `~` folders from the asset database) |
+| `Documentation~/` | User-facing Markdown (Unity hides `~` folders from the asset database). Start at [Documentation~/README.md](Documentation~/README.md). |
 
 ## Assemblies
 

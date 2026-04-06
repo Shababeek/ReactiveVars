@@ -1,5 +1,7 @@
 # The Binder System
 
+**Navigation:** [Documentation home](README.md) · **Previous:** [Recipes](Recipes.md) · **Next:** [TweenSystem.md](TweenSystem.md)
+
 Binders are components that **read** from variables and automatically update scene objects whenever the variable changes. This guide covers all 50+ binder types and shows you how to use them.
 
 ---

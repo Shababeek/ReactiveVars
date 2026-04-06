@@ -1,5 +1,7 @@
 # ScriptableVariable\<T\> — Reference
 
+**Navigation:** [Documentation home](README.md) · **Previous:** [FAQ.md](FAQ.md) · **Next:** [Reference.md](Reference.md)
+
 ## What Is a ScriptableVariable?
 
 A ScriptableVariable is a shared value that lives as a project asset. Any component in any scene can read it, write to it, or react when it changes — without those components knowing about each other.
@@ -10,13 +12,11 @@ Think of it like a shared whiteboard: one system writes a number on it, and anyo
 
 Use a ScriptableVariable whenever two or more objects need to share a piece of data. Common examples: player health, current score, selected weapon index, UI toggle states, timer values.
 
-## Creating Variables
+## Creating variables
 
-Right-click in the Project window: **Create > ReactiveVars > Variables** and pick a type (FloatVariable, IntVariable, BoolVariable, etc.). Give it a descriptive name like `PlayerHealth` or `CurrentScore`.
+Right-click in the Project window: **Create > Shababeek > ReactiveVars > Variables** and pick a type (FloatVariable, IntVariable, BoolVariable, etc.). Give it a descriptive name like `PlayerHealth` or `CurrentScore`. You can also type the asset class name in the **Create** search box. A few legacy types appear under **Create > ReactiveVars > …** only — see [Glossary](Glossary.md).
 
-![Creating a variable in the Project window](images/readme-create-variable.png)
-
-![Variable inspector showing value and settings](images/readme-variable-inspector.png)
+*Optional: add screenshots under `Documentation~/images/` and link them here for your fork.*
 
 ## API
 
@@ -108,6 +108,7 @@ ScriptableObject
 
 ## Related
 
+- **[Documentation home](README.md)** — Full manual index
 - **VariableReference\<T\>** — Dual-mode reference that can hold a constant value or point to a variable asset. Useful for prototyping with constants and swapping to shared variables later. See `VariableReference.cs`.
 - **NumericalReference** — Numeric-only reference accepting Float or Int. See `NumericalReference.cs`.
 - **VariableContainer** — Groups related variables into a single asset for organization, saving, loading, and bulk reset. See `VariableContainer.cs`.

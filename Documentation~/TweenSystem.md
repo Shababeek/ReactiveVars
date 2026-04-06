@@ -1,5 +1,7 @@
 # Tween System — Smooth Value Interpolation
 
+**Navigation:** [Documentation home](README.md) · **Previous:** [Binders.md](Binders.md) · **Next:** [VariableContainer.md](VariableContainer.md)
+
 The Tween System smoothly interpolates values over time instead of snapping them instantly. This adds visual polish to UI fades, camera movements, progress bar fills, and more.
 
 ---

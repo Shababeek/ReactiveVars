@@ -1,5 +1,7 @@
 # Getting Started with ReactiveVars
 
+**Navigation:** [Documentation home](README.md) · **Next:** [Recipes](Recipes.md) · [Binders](Binders.md)
+
 Welcome! This guide will walk you through the fundamentals of ReactiveVars and have you building reactive systems in minutes.
 
 ---
@@ -24,7 +26,7 @@ This eliminates hard-coded references, simplifies testing, and makes your system
 ### Step 1: Create a Variable
 
 1. In the **Project window**, right-click in any folder
-2. Select **Create > Shababeek > ReactiveVars > Variables > FloatVariable**
+2. Select **Create > Shababeek > ReactiveVars > Variables > FloatVariable** (or search **FloatVariable** in the Create menu)
 3. Name it `PlayerHealth`
 
 You now have a shared asset that any GameObject can read or write to.
@@ -76,7 +78,7 @@ Press Play. Every time you press **Space**, the health decreases and the UI text
 A variable is a **ScriptableObject asset** that holds a single value (float, int, bool, color, vector, etc.). Any system can read or write it.
 
 **Create one:**
-- Right-click in Project > **Create > Shababeek > ReactiveVars > Variables** > pick a type
+- Right-click in Project > **Create > Shababeek > ReactiveVars > Variables** > pick a type (see [Glossary](Glossary.md) for menu quirks)
 
 **Access it from code:**
 ```csharp
@@ -125,7 +127,7 @@ The driver feeds data in; binders push it out. They work together.
 An **Event** is a one-time signal with no permanent state. Use it when you care about a **moment** (player died, level completed, button pressed) rather than a **value** (health, score).
 
 **Create one:**
-- Right-click in Project > **Create > Shababeek > ReactiveVars > Events > GameEvent**
+- Right-click in Project > **Create > Shababeek > ReactiveVars > Events > GameEvent** (exact path matches the asset’s **Create** menu entry)
 
 **Listen to it in the scene:**
 - Add **GameEventListener** component to any GameObject
@@ -395,14 +397,13 @@ myVar.Distinct().Subscribe(_ => { });
 
 ---
 
-## Next Steps
+## Next steps
 
-Now that you understand the basics:
-
-1. **[Binders.md](Binders.md)** — Explore all 50+ binder types and when to use each
-2. **[TweenSystem.md](TweenSystem.md)** — Smooth animations with tweens
-3. **[VariableContainer.md](VariableContainer.md)** — Organize related variables for saving/loading
-4. **Main README** — Full reference of all systems
+1. **[Recipes.md](Recipes.md)** — Copy-paste designer setups
+2. **[Binders.md](Binders.md)** — All binder types
+3. **[TweenSystem.md](TweenSystem.md)** — Tweens
+4. **[VariableContainer.md](VariableContainer.md)** — Save/load groups
+5. **[Documentation home](README.md)** — Full table of contents
 
 ---
 

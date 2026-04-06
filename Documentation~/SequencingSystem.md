@@ -1,5 +1,7 @@
 # Sequencing System — Tutorials and Guided Workflows
 
+**Navigation:** [Documentation home](README.md) · **Previous:** [VariableContainer.md](VariableContainer.md) · **Next:** [FAQ.md](FAQ.md)
+
 > **Quick Reference**
 > **Create Sequence:** Right-click > Create > Shababeek > Sequencing > Sequence
 > **Create Branching Sequence:** Right-click > Create > Shababeek > Sequencing > Branching Sequence
@@ -23,7 +25,7 @@ The **Sequencing System** lets you build ordered flows — things that happen in
 
 ## Core Concepts
 
-![Core concepts overview](images/seq-core-concepts-overview.png)
+*Inspector screenshots for this guide were removed so the docs stay usable without image binaries; you can add figures under `Documentation~/images/` in your fork.*
 
 ### Sequence
 A **Sequence** is a ScriptableObject asset that contains an ordered list of steps. Sequences execute steps one at a time, in order. When the last step completes, the sequence is done.
@@ -61,7 +63,6 @@ Sequence: "Tool Tutorial"
 2. Select **Create > Shababeek > Sequencing > Sequence**
 3. Name it something descriptive (e.g., "TutorialSequence")
 
-![Creating a sequence asset](images/seq-create-asset.png)
 
 **Sequence Settings:**
 
@@ -74,7 +75,6 @@ Sequence: "Tool Tutorial"
 
 Select the Sequence asset. In the Inspector, use the **Add Step** button to create steps. You can reorder them by dragging and rename them by clicking the name field.
 
-![Sequence inspector with steps](images/seq-inspector-steps.png)
 
 ### Step 3: Place It in the Scene
 
@@ -82,7 +82,6 @@ Select the Sequence asset. In the Inspector, use the **Add Step** button to crea
 2. **Add Component > SequenceBehaviour**
 3. Assign your Sequence asset to the **Sequence** field
 
-![SequenceBehaviour inspector](images/seq-behaviour-inspector.png)
 
 **SequenceBehaviour Settings:**
 
@@ -106,13 +105,11 @@ For each step, you have two options:
 
 **Option B — Actions:** Add an Action component to a scene GameObject, assign the step it should listen to, and let the action handle completion automatically. See the [Action Types](#action-types) section.
 
-![Step with UnityEvents wired up](images/seq-step-events-wired.png)
 
 ### Shortcut: Create In Scene
 
 The Sequence Inspector has a **"Create Sequence in Scene"** button that auto-generates a GameObject with a `SequenceBehaviour` and a `StepEventListener` pre-wired with all your steps.
 
-![Create Sequence in Scene button](images/seq-create-in-scene-button.png)
 
 ---
 
@@ -120,7 +117,6 @@ The Sequence Inspector has a **"Create Sequence in Scene"** button that auto-gen
 
 Each step has these settings:
 
-![Step inspector](images/seq-step-inspector.png)
 
 ### Audio Settings
 
@@ -155,7 +151,6 @@ Actions are MonoBehaviour components that listen to a step and control when it c
 
 Triggers an animation and optionally auto-completes when it finishes.
 
-![AnimationAction inspector](images/seq-action-animation.png)
 
 | Setting | What It Does |
 |---|---|
@@ -173,7 +168,6 @@ Triggers an animation and optionally auto-completes when it finishes.
 
 Fires UnityEvents and optionally auto-completes after a delay.
 
-![EventAction inspector](images/seq-action-event.png)
 
 | Setting | What It Does |
 |---|---|
@@ -191,7 +185,6 @@ Fires UnityEvents and optionally auto-completes after a delay.
 
 Completes the step when a physics trigger collider is entered.
 
-![TriggerAction inspector](images/seq-action-trigger.png)
 
 | Setting | What It Does |
 |---|---|
@@ -207,7 +200,6 @@ Completes the step when a physics trigger collider is entered.
 
 Completes the step based on distance between two transforms.
 
-![ProximityAction inspector](images/seq-action-proximity.png)
 
 | Setting | What It Does |
 |---|---|
@@ -226,7 +218,6 @@ Completes the step based on distance between two transforms.
 
 Combines multiple other actions as conditions. Completes when enough of them are met.
 
-![MultiConditionAction inspector](images/seq-action-multicondition.png)
 
 | Setting | What It Does |
 |---|---|
@@ -244,7 +235,6 @@ Combines multiple other actions as conditions. Completes when enough of them are
 
 Starts or waits for another sequence from within a step.
 
-![SequenceControlAction inspector](images/seq-action-sequence-control.png)
 
 | Setting | What It Does |
 |---|---|
@@ -289,7 +279,6 @@ A bridge between steps and UnityEvents. Add this to a GameObject, assign steps, 
 
 The **"Create Sequence in Scene"** button on the Sequence Inspector creates one of these automatically with all steps pre-wired.
 
-![StepEventListener inspector](images/seq-step-event-listener.png)
 
 | Setting | What It Does |
 |---|---|
@@ -323,7 +312,6 @@ Utility component for playing additional audio clips during a sequence, separate
 2. Double-click the asset (or click **Open Graph View** in the Inspector) to open the visual graph editor
 3. Add steps as nodes, position them visually, and draw transitions between them
 
-![Branching sequence inspector](images/seq-branching-inspector.png)
 
 **Branching Sequence Settings:**
 
@@ -366,7 +354,6 @@ Add a **BranchingSequenceBehaviour** component and assign the asset. Works the s
 
 The Branching Sequence Graph View provides a visual node-based editor for BranchingSequence assets.
 
-![Graph view overview](images/seq-graph-view-overview.png)
 
 ### Visual Elements
 
@@ -392,13 +379,11 @@ The Branching Sequence Graph View provides a visual node-based editor for Branch
 
 Select a transition edge to reveal an editable detail panel on the right side of the graph. You can edit the label, condition variable, comparison, target value, target step, and event directly from the graph.
 
-![Transition detail panel](images/seq-graph-transition-panel.png)
 
 ### Runtime Visualization
 
 During Play mode the graph provides live feedback:
 
-![Graph view in play mode](images/seq-graph-view-runtime.png)
 
 | Visual | What It Means |
 |---|---|
