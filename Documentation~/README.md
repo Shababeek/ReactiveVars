@@ -13,6 +13,18 @@ Inspector-first data binding, events, tweens, and sequencing for Unity. This fol
 
 ---
 
+## Most common tasks
+
+- **Create a shared value**: [GettingStarted.md](GettingStarted.md) → “Create a Variable”
+- **Show it on UI**: [GettingStarted.md](GettingStarted.md) → “Setting Up Your First Binder”
+- **Feed it from scene logic** (timers, distance, input): [GettingStarted.md](GettingStarted.md) → “Setting Up Your First Driver” + [Recipes.md](Recipes.md)
+- **Watch/edit values in Play mode**: this page → “Reactive Vars window (editor)”
+- **Smoothly animate values**: [TweenSystem.md](TweenSystem.md)
+- **Save/load groups**: [VariableContainer.md](VariableContainer.md)
+- **Build tutorials / cutscenes**: [SequencingSystem.md](SequencingSystem.md)
+
+---
+
 ## Five-minute path (first win)
 
 1. Create a **FloatVariable** (see Create menu paths in [Glossary](Glossary.md)).
@@ -28,6 +40,24 @@ Optional: add a **TimerDriver** and another binder to the same float for a count
 Open **Shababeek > ReactiveVars > Reactive Vars Window** for a dockable **Reactive Vars** view. It lists **Variables** and **Events** from your project, grouped by asset, with search, type filter, and **Scene Refs Only** (default on: only assets referenced in the open scenes). In **Play mode**, edit **int / float / bool / string** values inline; the **Events** tab can **Fire** events for quick testing. Turn off **Scene Refs Only** to browse everything. See [Glossary](Glossary.md) and [Reference.md](Reference.md) for details.
 
 Runtime on-screen listing (play mode only): **VariableDebugOverlay** component — separate from this editor window.
+
+---
+
+## Screenshots and figures
+
+This repo keeps documentation visuals under `Documentation~/images/` and embeds them with relative links like:
+
+`![ReactiveVarsWindow](images/editor-reactivevarswindow-variables-tab.svg)`
+
+Guidelines:
+
+- Prefer **small, cropped** visuals focused on one concept (one inspector/window area).
+- Use **neutral example names** (e.g., `PlayerHealth`, `RoundTimer`).
+- Use **SVG figures** when a real screenshot is not available in-repo.
+
+Style reference figure:
+
+![FigureStyleGuidelines](images/figure-style-guidelines.svg)
 
 ---
 

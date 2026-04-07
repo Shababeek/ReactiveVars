@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-label="Documentation figure style guidelines">
+  <defs>
+    <style>
+      .bg { fill: #0b1020; }
+      .panel { fill: #121a33; stroke: #2a3a6a; stroke-width: 2; }
+      .title { fill: #e9eefc; font: 700 28px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+      .text { fill: #cdd6f4; font: 500 18px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+      .muted { fill: #9aa7d1; font: 500 16px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+      .pill { fill: #22305b; }
+      .pillText { fill: #e9eefc; font: 600 14px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; letter-spacing: .2px; }
+      .accent { stroke: #7aa2f7; stroke-width: 3; fill: none; }
+      .ok { fill: #1f6f3a; }
+      .bad { fill: #7a2a2a; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="420" rx="18"/>
+
+  <text class="title" x="48" y="70">Figures in these docs</text>
+  <text class="text" x="48" y="108">Use SVG figures when screenshots are not committed.</text>
+  <text class="muted" x="48" y="136">Keep them truthful, minimal, and focused on field names + intent.</text>
+
+  <g transform="translate(48,170)">
+    <rect class="panel" x="0" y="0" width="520" height="210" rx="14"/>
+    <rect class="pill" x="22" y="22" width="94" height="28" rx="14"/>
+    <text class="pillText" x="40" y="42">DO</text>
+    <text class="text" x="22" y="84">- Crop to the relevant area</text>
+    <text class="text" x="22" y="116">- Match field names in Unity</text>
+    <text class="text" x="22" y="148">- One concept per figure</text>
+    <text class="text" x="22" y="180">- Short caption under the image</text>
+  </g>
+
+  <g transform="translate(632,170)">
+    <rect class="panel" x="0" y="0" width="520" height="210" rx="14"/>
+    <rect class="pill" x="22" y="22" width="126" height="28" rx="14"/>
+    <text class="pillText" x="40" y="42">DON'T</text>
+    <text class="text" x="22" y="84">- Fake real Unity screenshots</text>
+    <text class="text" x="22" y="116">- Include private project data</text>
+    <text class="text" x="22" y="148">- Use tiny unreadable text</text>
+    <text class="text" x="22" y="180">- Add a gallery dump at top</text>
+  </g>
+</svg>
+
