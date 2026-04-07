@@ -44,6 +44,8 @@ namespace Shababeek.Sequencing
 
         [SerializeField, ReadOnly] private Step currentStep;
         private bool initialized;
+        private bool _restoring;
+        private readonly List<int> _executionPath = new();
         private Dictionary<Step, List<StepTransition>> _transitionCache;
         private CompositeDisposable _reactiveDisposable;
 
@@ -73,6 +75,12 @@ namespace Shababeek.Sequencing
         /// Gets the entry step for this branching sequence.
         /// </summary>
         public Step EntryStep => entryStep;
+
+        /// <summary>Gets the zero-based index of the current step in AllSteps.</summary>
+        public int CurrentStepIndex => currentStep != null ? allSteps.IndexOf(currentStep) : -1;
+
+        /// <summary>Gets the ordered list of step indices visited during execution.</summary>
+        public IReadOnlyList<int> ExecutionPath => _executionPath;
 
         /// <summary>
         /// Gets or sets whether reactive condition monitoring is enabled.
@@ -124,6 +132,8 @@ namespace Shababeek.Sequencing
                 step.Initialize(this);
             }
 
+            _executionPath.Clear();
+
             if (entryStep == null)
             {
                 Debug.LogError($"[BranchingSequence] '{name}' has no entry step assigned.");
@@ -131,6 +141,7 @@ namespace Shababeek.Sequencing
                 return;
             }
 
+            RecordStep(entryStep);
             TransitionToStep(entryStep);
             Raise(SequenceStatus.Started);
         }
@@ -147,7 +158,92 @@ namespace Shababeek.Sequencing
                 return;
             }
 
+            if (_restoring) return;
+
             EvaluateAndTransition();
+        }
+
+        /// <summary>
+        /// Restores the sequence by replaying an execution path. The last index in the path becomes the active step.
+        /// </summary>
+        public void RestoreFromPath(IList<int> path)
+        {
+            if (allSteps == null || allSteps.Count == 0 || path == null || path.Count == 0) return;
+
+            InitializeForRestore();
+
+            _executionPath.Clear();
+            _restoring = true;
+
+            for (int i = 0; i < path.Count - 1; i++)
+            {
+                int idx = Mathf.Clamp(path[i], 0, allSteps.Count - 1);
+                if (allSteps[idx] == null) continue;
+                _executionPath.Add(idx);
+                allSteps[idx].Begin();
+                allSteps[idx].CompleteStep();
+            }
+
+            _restoring = false;
+
+            int targetIdx = Mathf.Clamp(path[path.Count - 1], 0, allSteps.Count - 1);
+            _executionPath.Add(targetIdx);
+            TransitionToStep(allSteps[targetIdx]);
+            Raise(SequenceStatus.Started);
+        }
+
+        /// <summary>
+        /// Restores the sequence directly to a specific step by index. Falls back to index-order replay when no path is available.
+        /// </summary>
+        public void RestoreToStep(int stepIndex)
+        {
+            if (allSteps == null || allSteps.Count == 0) return;
+            stepIndex = Mathf.Clamp(stepIndex, 0, allSteps.Count - 1);
+
+            InitializeForRestore();
+
+            _executionPath.Clear();
+            _restoring = true;
+
+            for (int i = 0; i < stepIndex; i++)
+            {
+                if (allSteps[i] == null) continue;
+                _executionPath.Add(i);
+                allSteps[i].Begin();
+                allSteps[i].CompleteStep();
+            }
+
+            _restoring = false;
+
+            _executionPath.Add(stepIndex);
+            TransitionToStep(allSteps[stepIndex]);
+            Raise(SequenceStatus.Started);
+        }
+
+        private void InitializeForRestore()
+        {
+            DisposeReactiveSubscriptions();
+            currentStep = null;
+            status = SequenceStatus.Started;
+
+            if (!initialized)
+            {
+                initialized = true;
+                audioObject = new GameObject($"{name}_AudioObject").AddComponent<AudioSource>();
+                audioObject.loop = false;
+                audioObject.playOnAwake = false;
+                audioObject.pitch = pitch;
+                audioObject.volume = volume;
+            }
+
+            BuildTransitionCache();
+
+            foreach (var step in allSteps)
+            {
+                if (step == null) continue;
+                step.audioObject = audioObject;
+                step.Initialize(this);
+            }
         }
 
         private void TransitionToStep(Step nextStep)
@@ -190,6 +286,7 @@ namespace Shababeek.Sequencing
                 }
 
                 transition.TransitionEvent?.Raise();
+                RecordStep(transition.TargetStep);
                 TransitionToStep(transition.TargetStep);
                 return;
             }
@@ -246,6 +343,12 @@ namespace Shababeek.Sequencing
 
         #endregion
 
+        private void RecordStep(Step step)
+        {
+            int idx = allSteps.IndexOf(step);
+            if (idx >= 0) _executionPath.Add(idx);
+        }
+
         private void BuildTransitionCache()
         {
             _transitionCache = new Dictionary<Step, List<StepTransition>>();
@@ -278,6 +381,9 @@ namespace Shababeek.Sequencing
         /// <summary>
         /// Resets the sequence to its initial state.
         /// </summary>
+        /// <summary>
+        /// Resets the sequence to its initial state.
+        /// </summary>
         public void Reset()
         {
             DisposeReactiveSubscriptions();
@@ -290,6 +396,7 @@ namespace Shababeek.Sequencing
             currentStep = null;
             status = SequenceStatus.Inactive;
             initialized = false;
+            _executionPath.Clear();
         }
 
         /// <summary>

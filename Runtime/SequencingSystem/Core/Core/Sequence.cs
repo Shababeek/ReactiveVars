@@ -29,11 +29,15 @@ namespace Shababeek.Sequencing
 
         [SerializeField, ReadOnly] private int currentStepIndex;
         private bool initialized;
+        private bool _restoring;
 
         /// <summary>
         /// Gets whether the sequence has been started.
         /// </summary>
         public bool Started => status == SequenceStatus.Started;
+
+        /// <summary>Gets the zero-based index of the current step.</summary>
+        public int CurrentStepIndex => currentStepIndex;
 
         /// <summary>
         /// Gets the current step being executed in the sequence.
@@ -97,6 +101,8 @@ namespace Shababeek.Sequencing
         internal override void CompleteStep(Step step)
         {
             if (steps[currentStepIndex] != step) return;
+            if (_restoring) return;
+
             currentStepIndex++;
 
             UpdateProgress();
@@ -109,6 +115,48 @@ namespace Shababeek.Sequencing
 
             status = SequenceStatus.Completed;
             Raise(SequenceStatus.Completed);
+        }
+
+        /// <summary>
+        /// Restores the sequence to a specific step, rapid-firing through previous steps to trigger side effects.
+        /// </summary>
+        public void RestoreToStep(int targetStepIndex)
+        {
+            if (steps == null || steps.Count == 0) return;
+            targetStepIndex = Mathf.Clamp(targetStepIndex, 0, steps.Count - 1);
+
+            currentStepIndex = 0;
+            status = SequenceStatus.Started;
+
+            if (!initialized)
+            {
+                initialized = true;
+                audioObject = new GameObject($"{name}_AudioObject").AddComponent<AudioSource>();
+                audioObject.loop = false;
+                audioObject.playOnAwake = false;
+                audioObject.pitch = pitch;
+                audioObject.volume = volume;
+            }
+
+            foreach (var step in steps)
+            {
+                step.audioObject = audioObject;
+                step.Initialize(this);
+            }
+
+            _restoring = true;
+            for (int i = 0; i < targetStepIndex; i++)
+            {
+                currentStepIndex = i;
+                steps[i].Begin();
+                steps[i].CompleteStep();
+            }
+            _restoring = false;
+
+            currentStepIndex = targetStepIndex;
+            UpdateProgress();
+            steps[currentStepIndex].Begin();
+            Raise(SequenceStatus.Started);
         }
 
         /// <summary>
