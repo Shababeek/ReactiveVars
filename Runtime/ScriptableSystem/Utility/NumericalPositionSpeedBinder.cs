@@ -77,7 +77,9 @@ namespace Shababeek.ReactiveVars
         protected override void BindNumerical()
         {
             _currentT = CalculateCurrentT();
+            ApplyPosition();
             UpdateSpeed(NumericalVariable.AsFloat);
+            
         }
 
         protected override void OnNumericalValueChanged()
