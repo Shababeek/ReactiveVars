@@ -48,18 +48,7 @@ namespace Shababeek.ReactiveVars
         /// </remarks>
         protected abstract T DefaultValue { get; }
         
-        /// <summary>
-        /// Raises the event with the default value.
-        /// </summary>
-        /// <remarks>
-        /// This method calls the base Raise() method and then raises the data event
-        /// with the default value for this event type.
-        /// </remarks>
-        public override void Raise()
-        {
-            base.Raise();
-            _onRaised.OnNext(DefaultValue);
-        }
+
         
         /// <summary>
         /// Raises the event with the provided data.

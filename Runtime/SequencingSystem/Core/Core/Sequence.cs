@@ -30,7 +30,6 @@ namespace Shababeek.Sequencing
         [SerializeField, ReadOnly] private int currentStepIndex;
         private bool initialized;
         private bool _restoring;
-
         /// <summary>
         /// Gets whether the sequence has been started.
         /// </summary>
@@ -38,7 +37,7 @@ namespace Shababeek.Sequencing
 
         /// <summary>Gets the zero-based index of the current step.</summary>
         public int CurrentStepIndex => currentStepIndex;
-
+        
         /// <summary>
         /// Gets the current step being executed in the sequence.
         /// </summary>
@@ -57,6 +56,8 @@ namespace Shababeek.Sequencing
             get => progress;
             set => progress = value;
         }
+
+        public void NextStep() => CurrentStep.CompleteStep();
 
         private void Awake()
         {
