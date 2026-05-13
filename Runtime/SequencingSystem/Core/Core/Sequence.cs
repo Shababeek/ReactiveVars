@@ -190,7 +190,7 @@ namespace Shababeek.Sequencing
             if (steps == null) return;
             foreach (var step in steps)
             {
-                step.Raise(SequenceStatus.Inactive);
+                step.Initialize(this);
             }
             currentStepIndex = 0;
             status = SequenceStatus.Inactive;

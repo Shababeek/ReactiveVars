@@ -119,20 +119,53 @@ namespace Shababeek.Sequencing.Editors
                 listenerObj.transform.parent = obj.transform;
             }
 
+            EditorGUILayout.Space(4);
+            EditorGUILayout.LabelField("Debug", EditorStyles.boldLabel);
+
+            var resetColor = GUI.backgroundColor;
+            GUI.backgroundColor = new Color(1f, 0.4f, 0.4f);
+            if (GUILayout.Button("Reset All Steps"))
+            {
+                sequence.Reset();
+                EditorUtility.SetDirty(sequence);
+            }
+            GUI.backgroundColor = resetColor;
+
             if (Application.isPlaying)
             {
+                EditorGUILayout.Space(2);
                 var text = sequence.Started ? "Restart Quest" : "Start Quest";
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button(text)) sequence.Begin();
 
                 if (sequence.Started)
-                    if (GUILayout.Button("next"))
+                    if (GUILayout.Button("Next Step"))
                         sequence.CurrentStep.CompleteStep();
                 GUILayout.EndHorizontal();
 
-                GUI.enabled = false;
-                EditorGUILayout.LabelField(sequence.CurrentStep.ToString());
-                GUI.enabled = true;
+                EditorGUILayout.Space(2);
+                EditorGUILayout.LabelField("Step Status", EditorStyles.miniBoldLabel);
+                for (int i = 0; i < sequence.Steps.Count; i++)
+                {
+                    var step = sequence.Steps[i];
+                    if (step == null) continue;
+
+                    var isCurrent = sequence.Started && i == sequence.CurrentStepIndex;
+                    var statusColor = step.StepStatus switch
+                    {
+                        SequenceStatus.Started   => new Color(0.4f, 1f, 0.4f),
+                        SequenceStatus.Completed => new Color(0.5f, 0.5f, 0.5f),
+                        _                        => Color.white,
+                    };
+
+                    var style = isCurrent ? EditorStyles.boldLabel : EditorStyles.label;
+                    var semiIndex = step.name.IndexOf('_') + 1;
+                    var displayName = semiIndex > 0 ? step.name.Substring(semiIndex) : step.name;
+
+                    GUI.color = statusColor;
+                    EditorGUILayout.LabelField($"  {i + 1}. {displayName}  [{step.StepStatus}]", style);
+                    GUI.color = Color.white;
+                }
             }
         }
     }
