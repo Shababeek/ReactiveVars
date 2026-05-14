@@ -134,6 +134,7 @@ namespace Shababeek.Sequencing
             _audioCts.Cancel();
             _audioCts.Dispose();
             _audioCts = null;
+            audioObject.Stop();
         }
 
         protected override SequenceStatus DefaultValue => status;
