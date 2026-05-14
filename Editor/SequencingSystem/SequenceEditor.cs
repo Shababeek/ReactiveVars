@@ -14,6 +14,13 @@ namespace Shababeek.Sequencing.Editors
         private ReorderableList _stepList;
         private Sequence sequence;
 
+        // References panel state
+        private List<Object> _usedBy      = new();
+        private List<Object> _outgoingRefs = new();
+        private bool   _showRefs   = true;
+        private string _refsFilter = "";
+        private Vector2 _refsScroll;
+
         private void OnEnable()
         {
             sequence = (Sequence)target;
@@ -23,7 +30,18 @@ namespace Shababeek.Sequencing.Editors
             _stepList.onRemoveCallback += OnRemoveCallback;
             _stepList.drawElementCallback += DrawElementCallback;
             _stepList.onReorderCallback += OnReorderCallback;
+
+            SequenceSceneReferencesPanel.FindAllReferences(target, _usedBy, _outgoingRefs);
+            EditorApplication.hierarchyChanged += OnHierarchyChanged;
         }
+
+        private void OnDisable()
+        {
+            EditorApplication.hierarchyChanged -= OnHierarchyChanged;
+        }
+
+        private void OnHierarchyChanged() =>
+            SequenceSceneReferencesPanel.FindAllReferences(target, _usedBy, _outgoingRefs);
 
         private void OnReorderCallback(ReorderableList list)
         {
@@ -118,6 +136,9 @@ namespace Shababeek.Sequencing.Editors
                 
                 listenerObj.transform.parent = obj.transform;
             }
+
+            EditorGUILayout.Space(8);
+            SequenceSceneReferencesPanel.Draw(target, ref _usedBy, ref _outgoingRefs, ref _showRefs, ref _refsFilter, ref _refsScroll);
 
             EditorGUILayout.Space(4);
             EditorGUILayout.LabelField("Debug", EditorStyles.boldLabel);
