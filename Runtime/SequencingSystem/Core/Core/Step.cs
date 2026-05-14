@@ -137,8 +137,7 @@ namespace Shababeek.Sequencing
             audioObject.Stop();
         }
 
-        protected override SequenceStatus DefaultValue => status;
-
+       
         private void Complete()
         {
             audioObject.pitch = _parentSequence.SequencePitch;

@@ -63,7 +63,7 @@ namespace Shababeek.Sequencing
             {
                 if (condition == null || condition == this) continue;
 
-                condition.Step.OnRaisedData
+                condition.Step.OnRaised
                     .Where(status => status == SequenceStatus.Completed)
                     .Do(_ => OnConditionCompleted(condition))
                     .Subscribe()

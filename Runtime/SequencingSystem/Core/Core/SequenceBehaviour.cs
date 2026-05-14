@@ -72,13 +72,13 @@ namespace Shababeek.Sequencing
         {
             if (sequence == null) return;
 
-            sequence.OnRaisedData
+            sequence.OnRaised
                 .Where(status => status == SequenceStatus.Started)
                 .Do(_ => onSequenceStarted.Invoke())
                 .Subscribe()
                 .AddTo(this);
 
-            sequence.OnRaisedData
+            sequence.OnRaised
                 .Where(status => status == SequenceStatus.Completed)
                 .Do(_ => onSequenceCompleted.Invoke())
                 .Subscribe()
@@ -155,13 +155,13 @@ namespace Shababeek.Sequencing
 
         private void SubscribeAnalytics()
         {
-            sequence.Steps[0].OnRaisedData
+            sequence.Steps[0].OnRaised
                 .Where(status => status == SequenceStatus.Started)
                 .Do(_ => _startTime = Time.realtimeSinceStartup)
                 .Subscribe()
                 .AddTo(this);
 
-            sequence.Steps[^1].OnRaisedData
+            sequence.Steps[^1].OnRaised
                 .Where(status => status == SequenceStatus.Completed)
                 .Do(_ =>
                 {

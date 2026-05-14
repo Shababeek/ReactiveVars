@@ -44,7 +44,7 @@ namespace Shababeek.Sequencing
         {
             _disposable = new CompositeDisposable();
             started = false;
-            step.OnRaisedData.Do(ChangeStatus).Subscribe().AddTo(_disposable);
+            step.OnRaised.Do(ChangeStatus).Subscribe().AddTo(_disposable);
         }
 
         private void OnDisable()

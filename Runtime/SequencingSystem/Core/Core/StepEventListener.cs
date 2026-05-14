@@ -68,7 +68,7 @@ namespace Shababeek.Sequencing
             {
                 if (stepWithEvents.step != null)
                 {
-                    stepWithEvents.step.OnRaisedData.Do(status => OnStepStatusChanged(stepWithEvents, status))
+                    stepWithEvents.step.OnRaised.Do(status => OnStepStatusChanged(stepWithEvents, status))
                         .Subscribe().AddTo(_disposable);
                 }
             }

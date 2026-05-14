@@ -58,7 +58,7 @@ namespace Shababeek.Sequencing
 
         private void WaitForSequenceCompletion()
         {
-            targetSequence.OnRaisedData
+            targetSequence.OnRaised
                 .Where(status => status == SequenceStatus.Completed)
                 .Take(1)
                 .Do(_ => CompleteStep())
@@ -76,7 +76,7 @@ namespace Shababeek.Sequencing
             }
 
             var targetStep = targetSequence.Steps[targetStepIndex];
-            targetStep.OnRaisedData
+            targetStep.OnRaised
                 .Where(status => status == SequenceStatus.Completed)
                 .Take(1)
                 .Do(_ => CompleteStep())

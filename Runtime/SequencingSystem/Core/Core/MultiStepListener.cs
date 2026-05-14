@@ -54,7 +54,7 @@ namespace Shababeek.Sequencing
             disposable = new();
             foreach (var step in steps)
             {
-                step.OnRaisedData.Do(OnStatusChanged).Subscribe().AddTo(disposable);
+                step.OnRaised.Do(OnStatusChanged).Subscribe().AddTo(disposable);
             }
         }
 
