@@ -98,7 +98,7 @@ namespace Shababeek.Sequencing
 
         private async void CheckAudioCompletion()
         {
-            audioObject.Stop();
+            if (audioObject != null) audioObject.Stop();
             if (audioClip is null) return;
 
             _audioCts = new CancellationTokenSource();
@@ -134,7 +134,7 @@ namespace Shababeek.Sequencing
             _audioCts.Cancel();
             _audioCts.Dispose();
             _audioCts = null;
-            audioObject.Stop();
+            if (audioObject != null) audioObject.Stop();
         }
 
        
