@@ -33,4 +33,10 @@ namespace Shababeek.ReactiveVars
     /// </summary>
     [Serializable]
     public class Vector2UnityEvent : UnityEvent<Vector2> { }
+
+    /// <summary>
+    /// UnityEvent that passes a bool value.
+    /// </summary>
+    [Serializable]
+    public class BoolUnityEvent : UnityEvent<bool> { }
 }
