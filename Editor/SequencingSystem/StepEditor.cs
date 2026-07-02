@@ -28,8 +28,21 @@ namespace Shababeek.Sequencing.Editors
             EditorApplication.hierarchyChanged -= OnHierarchyChanged;
         }
 
-        private void OnHierarchyChanged() =>
-            SequenceSceneReferencesPanel.FindAllReferences(target, _usedBy, _outgoingRefs);
+        private bool _refsScanQueued;
+
+        private void OnHierarchyChanged()
+        {
+            if (Application.isPlaying) return;
+            if (_refsScanQueued) return;
+            _refsScanQueued = true;
+            EditorApplication.delayCall += () =>
+            {
+                _refsScanQueued = false;
+                if (target == null) return;
+                SequenceSceneReferencesPanel.FindAllReferences(target, _usedBy, _outgoingRefs);
+                Repaint();
+            };
+        }
 
         public override void OnInspectorGUI()
         {
