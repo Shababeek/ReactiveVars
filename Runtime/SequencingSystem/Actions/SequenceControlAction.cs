@@ -30,6 +30,9 @@ namespace Shababeek.Sequencing
         [Tooltip("The step index to wait for (only used with WaitForStep operation).")]
         [SerializeField] private int targetStepIndex = 0;
 
+        /// <summary>The sequence this action controls.</summary>
+        public Sequence TargetSequence => targetSequence;
+
         private void Subscribe()
         {
             if (targetSequence == null) return;
