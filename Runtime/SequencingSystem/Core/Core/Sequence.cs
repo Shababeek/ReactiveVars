@@ -5,6 +5,7 @@ using Shababeek.ReactiveVars;
 using UnityEngine;
 
 [assembly: InternalsVisibleTo("Shababeek.ReactiveVars.Editor")]
+[assembly: InternalsVisibleTo("Shababeek.GoodMorning")]
 
 namespace Shababeek.Sequencing
 {
@@ -196,6 +197,35 @@ namespace Shababeek.Sequencing
             status = SequenceStatus.Inactive;
             initialized = false;
             if (progress != null) progress.Value = 0f;
+        }
+
+        /// <summary>
+        /// Sets the current step index directly without firing any events or side effects.
+        /// Used by the save system to skip completed steps during restore.
+        /// </summary>
+        internal void SetCurrentStepDirect(int index)
+        {
+            if (steps == null || steps.Count == 0) return;
+            index = Mathf.Clamp(index, 0, steps.Count - 1);
+
+            if (!initialized)
+            {
+                initialized = true;
+                audioObject = new GameObject($"{name}_AudioObject").AddComponent<AudioSource>();
+                audioObject.loop = false;
+                audioObject.playOnAwake = false;
+                audioObject.pitch = pitch;
+                audioObject.volume = volume;
+            }
+
+            foreach (var step in steps)
+            {
+                step.audioObject = audioObject;
+                step.Initialize(this);
+            }
+
+            currentStepIndex = index;
+            status = SequenceStatus.Started;
         }
 
         /// <summary>
