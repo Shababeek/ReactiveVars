@@ -194,6 +194,57 @@ namespace Shababeek.ReactiveVars
 
         #endregion
 
+        #region Gizmos
+
+        [Header("Gizmos")]
+        [Tooltip("Draw start/end position gizmos in the scene view.")]
+        [SerializeField] private bool drawGizmos = true;
+
+        [Tooltip("Radius of the endpoint gizmo spheres.")]
+        [SerializeField] private float gizmoRadius = 0.03f;
+
+        /// <summary>Converts a start/end position into world space, honoring useLocalPosition.</summary>
+        private Vector3 ToWorld(Vector3 pos)
+        {
+            if (!useLocalPosition) return pos;
+            return transform.parent != null ? transform.parent.TransformPoint(pos) : pos;
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (!drawGizmos) return;
+
+            Vector3 start = ToWorld(startPosition);
+            Vector3 end = ToWorld(endPosition);
+
+            // Path
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawLine(start, end);
+
+            // Start (green) / End (red)
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(start, gizmoRadius);
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(end, gizmoRadius);
+
+            // Current interpolated position (cyan) when playing
+            if (Application.isPlaying)
+            {
+                Vector3 current = Vector3.Lerp(start, end, _currentT);
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireSphere(current, gizmoRadius * 1.5f);
+            }
+
+#if UNITY_EDITOR
+            UnityEditor.Handles.color = Color.green;
+            UnityEditor.Handles.Label(start, "Start");
+            UnityEditor.Handles.color = Color.red;
+            UnityEditor.Handles.Label(end, "End");
+#endif
+        }
+
+        #endregion
+
         #region Editor Helpers
 
         /// <summary>Sets start position to current transform position.</summary>

@@ -231,6 +231,98 @@ namespace Shababeek.ReactiveVars
 
         #endregion
 
+        #region Gizmos
+
+        [Header("Gizmos")]
+        [Tooltip("Draw the rotation axis and angle-limit arc in the scene view.")]
+        [SerializeField] private bool drawGizmos = true;
+
+        [Tooltip("Radius of the angle-limit arc.")]
+        [SerializeField] private float gizmoRadius = 0.5f;
+
+        /// <summary>Unit vector for the selected rotation axis.</summary>
+        private Vector3 AxisUnit => rotationAxis switch
+        {
+            RotationAxis.X => Vector3.right,
+            RotationAxis.Y => Vector3.up,
+            RotationAxis.Z => Vector3.forward,
+            _ => Vector3.forward
+        };
+
+        /// <summary>Reference (zero-angle) direction, perpendicular to the rotation axis.</summary>
+        private Vector3 AxisReference => rotationAxis switch
+        {
+            RotationAxis.X => Vector3.up,      // rotate about X, measure from Y
+            RotationAxis.Y => Vector3.forward, // rotate about Y, measure from Z
+            RotationAxis.Z => Vector3.right,   // rotate about Z, measure from X
+            _ => Vector3.right
+        };
+
+        private void OnDrawGizmos()
+        {
+            if (!drawGizmos) return;
+
+#if UNITY_EDITOR
+            // Frame the arc is drawn in: parent orientation (local) or world, with the
+            // measured axis zeroed so the reference sits at angle 0.
+            Vector3 rawEuler = useLocalRotation ? transform.localEulerAngles : transform.eulerAngles;
+            Vector3 baseEuler = rawEuler;
+            switch (rotationAxis)
+            {
+                case RotationAxis.X: baseEuler.x = 0f; break;
+                case RotationAxis.Y: baseEuler.y = 0f; break;
+                case RotationAxis.Z: baseEuler.z = 0f; break;
+            }
+
+            Quaternion parent = (useLocalRotation && transform.parent != null)
+                ? transform.parent.rotation
+                : Quaternion.identity;
+            Quaternion frame = parent * Quaternion.Euler(baseEuler);
+
+            Vector3 center = transform.position;
+            Vector3 normal = frame * AxisUnit;
+            Vector3 zeroDir = frame * AxisReference;
+
+            // Rotation axis line
+            Gizmos.color = Color.white;
+            Gizmos.DrawLine(center - normal * gizmoRadius, center + normal * gizmoRadius);
+
+            if (useAngleLimits)
+            {
+                Vector3 minDir = Quaternion.AngleAxis(minAngle, normal) * zeroDir;
+                Vector3 maxDir = Quaternion.AngleAxis(maxAngle, normal) * zeroDir;
+
+                // Filled sweep
+                UnityEditor.Handles.color = new Color(0f, 1f, 1f, 0.15f);
+                UnityEditor.Handles.DrawSolidArc(center, normal, minDir, maxAngle - minAngle, gizmoRadius);
+
+                // Min (red) / Max (green) limit lines
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(center, center + minDir * gizmoRadius);
+                Gizmos.color = Color.green;
+                Gizmos.DrawLine(center, center + maxDir * gizmoRadius);
+
+                UnityEditor.Handles.Label(center + minDir * gizmoRadius, $"Min {minAngle:0}°");
+                UnityEditor.Handles.Label(center + maxDir * gizmoRadius, $"Max {maxAngle:0}°");
+            }
+            else
+            {
+                UnityEditor.Handles.color = new Color(1f, 1f, 1f, 0.1f);
+                UnityEditor.Handles.DrawSolidDisc(center, normal, gizmoRadius);
+            }
+
+            // Live current-angle needle (play mode)
+            if (Application.isPlaying)
+            {
+                Vector3 currentDir = Quaternion.AngleAxis(_currentAngle, normal) * zeroDir;
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawLine(center, center + currentDir * gizmoRadius);
+            }
+#endif
+        }
+
+        #endregion
+
         /// <summary>Defines which axis to rotate around.</summary>
         public enum RotationAxis
         {
