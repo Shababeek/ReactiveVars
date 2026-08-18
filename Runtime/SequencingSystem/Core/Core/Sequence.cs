@@ -77,6 +77,9 @@ namespace Shababeek.Sequencing
         {
             Debug.Log($"starting sequence{name}");
             currentStepIndex = 0;
+            // Sequences are ScriptableObjects, so this state outlives play mode. Clear it on every
+            // fresh start rather than trusting the previous session to have unwound cleanly.
+            _restoring = false;
 
             status = SequenceStatus.Started;
             if (!initialized)
@@ -146,14 +149,25 @@ namespace Shababeek.Sequencing
                 step.Initialize(this);
             }
 
+            // finally is required, not optional: the replay invokes each skipped step's
+            // onStarted/onCompleted UnityEvents, any of which can throw. _restoring lives on a
+            // ScriptableObject, so it survives leaving play mode — a single throw here would
+            // wedge the flag on until the next domain reload and make CompleteStep a silent
+            // no-op for the rest of the session.
             _restoring = true;
-            for (int i = 0; i < targetStepIndex; i++)
+            try
             {
-                currentStepIndex = i;
-                steps[i].Begin();
-                steps[i].CompleteStep();
+                for (int i = 0; i < targetStepIndex; i++)
+                {
+                    currentStepIndex = i;
+                    steps[i].Begin();
+                    steps[i].CompleteStep();
+                }
             }
-            _restoring = false;
+            finally
+            {
+                _restoring = false;
+            }
 
             currentStepIndex = targetStepIndex;
             UpdateProgress();
@@ -196,6 +210,7 @@ namespace Shababeek.Sequencing
             currentStepIndex = 0;
             status = SequenceStatus.Inactive;
             initialized = false;
+            _restoring = false;
             if (progress != null) progress.Value = 0f;
         }
 
@@ -207,6 +222,7 @@ namespace Shababeek.Sequencing
         {
             if (steps == null || steps.Count == 0) return;
             index = Mathf.Clamp(index, 0, steps.Count - 1);
+            _restoring = false;
 
             if (!initialized)
             {
