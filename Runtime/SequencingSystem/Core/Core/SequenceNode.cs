@@ -26,6 +26,25 @@ namespace Shababeek.Sequencing
 
         private new readonly Subject<SequenceStatus> _onRaised = new();
 
+        private static int _restoreDepth;
+
+        /// <summary>
+        /// True while a sequence is replaying earlier steps to restore saved progress.
+        /// </summary>
+        public static bool IsRestoring => _restoreDepth > 0;
+
+        // These ScriptableObjects outlive play mode, so a counter left above zero by an exception
+        // would silence every sequence for the rest of the editor session. Callers pair these in
+        // try/finally, and this resets the count on entering play mode regardless.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetRestoreDepth() => _restoreDepth = 0;
+
+        /// <summary>Marks the start of a restore replay. Always pair with <see cref="EndRestoreScope"/> in a finally.</summary>
+        protected static void BeginRestoreScope() => _restoreDepth++;
+
+        /// <summary>Marks the end of a restore replay.</summary>
+        protected static void EndRestoreScope() => _restoreDepth = _restoreDepth > 0 ? _restoreDepth - 1 : 0;
+
         /// <summary>
         /// Observable stream for when this event is raised with data.
         /// </summary>
@@ -62,6 +81,12 @@ namespace Shababeek.Sequencing
         /// </remarks>
         public void Raise(SequenceStatus data)
         {
+            // A replayed step is not a step the player reached. Suppressing the notification here
+            // rather than in each handler means every listener in the project gets this right by
+            // default, instead of each one having to invent its own way to tell a restore apart
+            // from real progress — which is a distinction none of them can actually make.
+            if (IsRestoring) return;
+
             try
             { 
                 _onRaised.OnNext(data);

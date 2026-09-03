@@ -155,6 +155,7 @@ namespace Shababeek.Sequencing
             // wedge the flag on until the next domain reload and make CompleteStep a silent
             // no-op for the rest of the session.
             _restoring = true;
+            BeginRestoreScope();
             try
             {
                 for (int i = 0; i < targetStepIndex; i++)
@@ -166,6 +167,7 @@ namespace Shababeek.Sequencing
             }
             finally
             {
+                EndRestoreScope();
                 _restoring = false;
             }
 

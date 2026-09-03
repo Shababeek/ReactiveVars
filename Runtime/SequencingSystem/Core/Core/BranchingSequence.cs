@@ -173,18 +173,28 @@ namespace Shababeek.Sequencing
             InitializeForRestore();
 
             _executionPath.Clear();
+            // try/finally for the same reason Sequence.RestoreToStep documents: the replay invokes
+            // each skipped step's onStarted/onCompleted UnityEvents, any of which can throw, and
+            // these flags live on a ScriptableObject that survives leaving play mode. One throw
+            // without this would wedge the sequence into a permanent restoring state.
             _restoring = true;
-
-            for (int i = 0; i < path.Count - 1; i++)
+            BeginRestoreScope();
+            try
             {
-                int idx = Mathf.Clamp(path[i], 0, allSteps.Count - 1);
-                if (allSteps[idx] == null) continue;
-                _executionPath.Add(idx);
-                allSteps[idx].Begin();
-                allSteps[idx].CompleteStep();
+                for (int i = 0; i < path.Count - 1; i++)
+                {
+                    int idx = Mathf.Clamp(path[i], 0, allSteps.Count - 1);
+                    if (allSteps[idx] == null) continue;
+                    _executionPath.Add(idx);
+                    allSteps[idx].Begin();
+                    allSteps[idx].CompleteStep();
+                }
             }
-
-            _restoring = false;
+            finally
+            {
+                EndRestoreScope();
+                _restoring = false;
+            }
 
             int targetIdx = Mathf.Clamp(path[path.Count - 1], 0, allSteps.Count - 1);
             _executionPath.Add(targetIdx);
@@ -203,17 +213,27 @@ namespace Shababeek.Sequencing
             InitializeForRestore();
 
             _executionPath.Clear();
+            // try/finally for the same reason Sequence.RestoreToStep documents: the replay invokes
+            // each skipped step's onStarted/onCompleted UnityEvents, any of which can throw, and
+            // these flags live on a ScriptableObject that survives leaving play mode. One throw
+            // without this would wedge the sequence into a permanent restoring state.
             _restoring = true;
-
-            for (int i = 0; i < stepIndex; i++)
+            BeginRestoreScope();
+            try
             {
-                if (allSteps[i] == null) continue;
-                _executionPath.Add(i);
-                allSteps[i].Begin();
-                allSteps[i].CompleteStep();
+                for (int i = 0; i < stepIndex; i++)
+                {
+                    if (allSteps[i] == null) continue;
+                    _executionPath.Add(i);
+                    allSteps[i].Begin();
+                    allSteps[i].CompleteStep();
+                }
             }
-
-            _restoring = false;
+            finally
+            {
+                EndRestoreScope();
+                _restoring = false;
+            }
 
             _executionPath.Add(stepIndex);
             TransitionToStep(allSteps[stepIndex]);
