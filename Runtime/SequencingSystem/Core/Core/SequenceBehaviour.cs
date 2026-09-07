@@ -4,7 +4,9 @@ using Shababeek.ReactiveVars;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
+#if REACTIVE_VARS_INPUT_SYSTEM
 using UnityEngine.InputSystem;
+#endif
 
 namespace Shababeek.Sequencing
 {
@@ -34,11 +36,13 @@ namespace Shababeek.Sequencing
         [Tooltip("Enable keyboard controls for stepping through the sequence during development.")]
         [SerializeField] private bool enableDebugControls = false;
 
+#if REACTIVE_VARS_INPUT_SYSTEM
         [Tooltip("Key to advance to the next step (default: N).")]
         [SerializeField] private Key nextStepKey = Key.N;
 
         [Tooltip("Key to go back to the previous step (default: P).")]
         [SerializeField] private Key previousStepKey = Key.P;
+#endif
 
         [Header("Analytics")]
         [Tooltip("Enable analytics tracking for sequence start and completion times.")]
@@ -136,6 +140,7 @@ namespace Shababeek.Sequencing
             sequence.GoToPreviousStep();
         }
 
+#if REACTIVE_VARS_INPUT_SYSTEM
         private void Update()
         {
             if (!enableDebugControls || !started) return;
@@ -152,6 +157,7 @@ namespace Shababeek.Sequencing
                 GoToPreviousStep();
             }
         }
+#endif
 
         private void SubscribeAnalytics()
         {

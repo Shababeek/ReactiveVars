@@ -2,7 +2,9 @@ using Shababeek.ReactiveVars;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
+#if REACTIVE_VARS_INPUT_SYSTEM
 using UnityEngine.InputSystem;
+#endif
 
 namespace Shababeek.Sequencing
 {
@@ -32,8 +34,10 @@ namespace Shababeek.Sequencing
         [Tooltip("Enable keyboard controls for debugging during development.")]
         [SerializeField] private bool enableDebugControls;
 
+#if REACTIVE_VARS_INPUT_SYSTEM
         [Tooltip("Key to skip the current step (default: N).")]
         [SerializeField] private Key skipStepKey = Key.N;
+#endif
 
         [Header("Analytics")]
         [Tooltip("Enable analytics tracking for sequence timing.")]
@@ -122,6 +126,7 @@ namespace Shababeek.Sequencing
             sequence.CurrentStep.CompleteStep();
         }
 
+#if REACTIVE_VARS_INPUT_SYSTEM
         private void Update()
         {
             if (!enableDebugControls || !started) return;
@@ -130,6 +135,7 @@ namespace Shababeek.Sequencing
             if (keyboard[skipStepKey].wasPressedThisFrame)
                 SkipCurrentStep();
         }
+#endif
 
         private void SubscribeAnalytics()
         {

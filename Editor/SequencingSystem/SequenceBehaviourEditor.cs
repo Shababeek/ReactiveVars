@@ -59,8 +59,15 @@ namespace Shababeek.Sequencing
             if (_enableDebugControls.boolValue)
             {
                 EditorGUI.indentLevel++;
-                EditorGUILayout.PropertyField(_nextStepKey, new GUIContent("Next Step Key"));
-                EditorGUILayout.PropertyField(_previousStepKey, new GUIContent("Previous Step Key"));
+                if (_nextStepKey != null && _previousStepKey != null)
+                {
+                    EditorGUILayout.PropertyField(_nextStepKey, new GUIContent("Next Step Key"));
+                    EditorGUILayout.PropertyField(_previousStepKey, new GUIContent("Previous Step Key"));
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("Debug keys require the Input System package.", MessageType.Info);
+                }
                 EditorGUI.indentLevel--;
             }
 

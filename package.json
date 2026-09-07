@@ -6,8 +6,7 @@
     "unity": "6000.0",
     "documentationUrl": "https://github.com/Shababeek/ReactiveVars/blob/main/Documentation~/README.md",
     "dependencies": {
-        "com.neuecc.unirx": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
-        "com.unity.textmeshpro": "3.0.6"
+        "com.unity.ugui": "2.0.0"
     },
     "author": {
         "name": "Ahmadabobakr",

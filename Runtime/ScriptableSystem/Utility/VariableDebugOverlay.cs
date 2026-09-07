@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+#if REACTIVE_VARS_INPUT_SYSTEM && ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 namespace Shababeek.ReactiveVars
 {
@@ -11,8 +14,13 @@ namespace Shababeek.ReactiveVars
     [AddComponentMenu("ReactiveVars/Utility/Variable Debug Overlay")]
     public class VariableDebugOverlay : MonoBehaviour
     {
+#if REACTIVE_VARS_INPUT_SYSTEM && ENABLE_INPUT_SYSTEM
+        [Tooltip("Key to toggle the debug overlay visibility.")]
+        [SerializeField] private Key toggleKey = Key.F1;
+#else
         [Tooltip("Key to toggle the debug overlay visibility.")]
         [SerializeField] private KeyCode toggleKey = KeyCode.F1;
+#endif
 
         [Tooltip("Whether the overlay is visible on start.")]
         [SerializeField] private bool visibleOnStart = true;
@@ -54,9 +62,24 @@ namespace Shababeek.ReactiveVars
 
         private void Update()
         {
-            if (Input.GetKeyDown(toggleKey))
+            if (TogglePressed())
                 _visible = !_visible;
         }
+
+        private bool TogglePressed()
+        {
+#if REACTIVE_VARS_INPUT_SYSTEM && ENABLE_INPUT_SYSTEM
+            var keyboard = Keyboard.current;
+            return keyboard != null && keyboard[toggleKey].wasPressedThisFrame;
+#elif ENABLE_LEGACY_INPUT_MANAGER
+            return Input.GetKeyDown(toggleKey);
+#else
+            return false;
+#endif
+        }
+
+        /// <summary>Toggles the overlay visibility.</summary>
+        public void Toggle() => _visible = !_visible;
 
         /// <summary>Refreshes the list of watched variables.</summary>
         public void RefreshVariables()
