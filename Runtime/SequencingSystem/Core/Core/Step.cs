@@ -61,7 +61,7 @@ namespace Shababeek.Sequencing
         /// </summary>
         public override void Begin()
         {
-            if (overridePitch) audioObject.pitch = pitch;
+            if (overridePitch && audioObject != null) audioObject.pitch = pitch;
             StepStatus = SequenceStatus.Started;
             onStarted.Invoke();
             CheckAudioCompletion();
@@ -107,6 +107,15 @@ namespace Shababeek.Sequencing
             try
             {
                 await Awaitable.WaitForSecondsAsync(audioDelay, token);
+
+                // Re-check after the await: the scene (and with it the audio object) can be torn
+                // down while this delay is pending. audioOnly steps would otherwise never complete.
+                if (audioObject == null)
+                {
+                    if (audioOnly) CompleteStep();
+                    return;
+                }
+
                 audioObject.clip = audioClip;
                 audioObject.Play();
 
@@ -115,7 +124,7 @@ namespace Shababeek.Sequencing
                 // Wait one frame for the audio source to register as playing
                 await Awaitable.NextFrameAsync(token);
 
-                while (audioObject.isPlaying)
+                while (audioObject != null && audioObject.isPlaying)
                 {
                     await Awaitable.NextFrameAsync(token);
                 }
@@ -140,7 +149,9 @@ namespace Shababeek.Sequencing
        
         private void Complete()
         {
-            audioObject.pitch = _parentSequence.SequencePitch;
+            // Restoring the sequence pitch is cosmetic; never let a dead audio object stop the
+            // step from completing and advancing the sequence.
+            if (audioObject != null) audioObject.pitch = _parentSequence.SequencePitch;
             StepStatus = SequenceStatus.Completed;
             _parentSequence.CompleteStep(this);
         }

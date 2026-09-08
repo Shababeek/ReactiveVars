@@ -113,7 +113,7 @@ namespace Shababeek.Sequencing
             currentStep = null;
             status = SequenceStatus.Started;
 
-            if (!initialized)
+            if (!initialized || audioObject == null)
             {
                 initialized = true;
                 audioObject = new GameObject($"{name}_AudioObject").AddComponent<AudioSource>();
@@ -246,7 +246,7 @@ namespace Shababeek.Sequencing
             currentStep = null;
             status = SequenceStatus.Started;
 
-            if (!initialized)
+            if (!initialized || audioObject == null)
             {
                 initialized = true;
                 audioObject = new GameObject($"{name}_AudioObject").AddComponent<AudioSource>();
@@ -393,6 +393,7 @@ namespace Shababeek.Sequencing
         /// </summary>
         public void PlayClip(AudioClip clip)
         {
+            if (audioObject == null) return;
             audioObject.Stop();
             audioObject.clip = clip;
             audioObject.Play();

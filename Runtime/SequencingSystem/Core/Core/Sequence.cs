@@ -82,7 +82,11 @@ namespace Shababeek.Sequencing
             _restoring = false;
 
             status = SequenceStatus.Started;
-            if (!initialized)
+            // The audio GameObject is scene-owned and dies with the scene, but `initialized` lives
+            // on this ScriptableObject and survives. Awake only clears it on a domain reload, so
+            // with Fast Play Mode the flag stays true while the AudioSource is already destroyed.
+            // Gate on the object itself, not the flag.
+            if (!initialized || audioObject == null)
             {
                 initialized = true;
                 audioObject = new GameObject($"{name}_AudioObject").AddComponent<AudioSource>();
@@ -133,7 +137,7 @@ namespace Shababeek.Sequencing
             currentStepIndex = 0;
             status = SequenceStatus.Started;
 
-            if (!initialized)
+            if (!initialized || audioObject == null)
             {
                 initialized = true;
                 audioObject = new GameObject($"{name}_AudioObject").AddComponent<AudioSource>();
@@ -182,6 +186,7 @@ namespace Shababeek.Sequencing
         /// </summary>
         public void PlayClip(AudioClip clip)
         {
+            if (audioObject == null) return;
             audioObject.Stop();
             audioObject.clip = clip;
             audioObject.Play();
@@ -226,7 +231,7 @@ namespace Shababeek.Sequencing
             index = Mathf.Clamp(index, 0, steps.Count - 1);
             _restoring = false;
 
-            if (!initialized)
+            if (!initialized || audioObject == null)
             {
                 initialized = true;
                 audioObject = new GameObject($"{name}_AudioObject").AddComponent<AudioSource>();
