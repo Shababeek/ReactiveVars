@@ -56,7 +56,6 @@ namespace Shababeek.Interactions.Editors
                     if (assets.Length > 0)
                     {
                         property.objectReferenceValue = AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(assets[0]));
-                        Debug.Log($"Found asset: {property.objectReferenceValue.name}");
                     }
                 }
             }
@@ -77,7 +76,6 @@ namespace Shababeek.Interactions.Editors
         /// </summary>
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
-            Debug.Log(property.objectReferenceValue);
             var container = new VisualElement();
             var isShared = new Toggle("IsShared");
             container.style.flexDirection = new StyleEnum<FlexDirection>(FlexDirection.Row);
@@ -92,7 +90,6 @@ namespace Shababeek.Interactions.Editors
                     var assets = AssetDatabase.FindAssets($"t:{type} {property.name}");
                     if (assets.Length == 0) return;
                     property.objectReferenceValue = AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(assets[0]));
-                    Debug.Log(property.objectReferenceValue.name);
                 })
                 {
                     text = "Find Asset"
