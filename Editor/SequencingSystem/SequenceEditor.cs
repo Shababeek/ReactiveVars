@@ -123,6 +123,43 @@ namespace Shababeek.Sequencing.Editors
             //list.serializedProperty.GetArrayElementAtIndex(index).objectReferenceValue = step;
         }
 
+        // Removing a step from the list without the list's own remove button (drag-out, undo, a
+        // text edit of the asset) leaves its sub-asset behind, still showing under the sequence.
+        private void RefreshSteps()
+        {
+            serializedObject.ApplyModifiedProperties();
+
+            var path = AssetDatabase.GetAssetPath(sequence);
+            var inList = new HashSet<Step>(sequence.Steps);
+            var unused = new List<Step>();
+            foreach (var sub in AssetDatabase.LoadAllAssetsAtPath(path))
+                if (sub is Step step && !inList.Contains(step))
+                    unused.Add(step);
+
+            sequence.Steps.RemoveAll(s => s == null);
+
+            if (unused.Count > 0)
+            {
+                var names = string.Join("\n", unused.ConvertAll(s => "  • " + s.name));
+                if (EditorUtility.DisplayDialog("Remove unused steps",
+                        $"These steps are not in '{sequence.name}' but are still stored in it:\n\n{names}\n\n" +
+                        "Delete them? Anything still referencing them will become Missing.",
+                        "Delete", "Keep"))
+                {
+                    foreach (var step in unused)
+                    {
+                        AssetDatabase.RemoveObjectFromAsset(step);
+                        DestroyImmediate(step, true);
+                    }
+                }
+            }
+
+            EditorUtility.SetDirty(sequence);
+            serializedObject.Update();
+            OnReorderCallback(_stepList);
+            SequenceSceneReferencesPanel.FindAllReferences(target, _usedBy, _outgoingRefs);
+        }
+
         public override void OnInspectorGUI()
         {
             serializedObject.ApplyModifiedProperties();
@@ -149,6 +186,10 @@ namespace Shababeek.Sequencing.Editors
                 
                 listenerObj.transform.parent = obj.transform;
             }
+
+            if (GUILayout.Button(new GUIContent("Refresh Steps",
+                    "Renumbers the steps and deletes step sub-assets that are no longer in the list.")))
+                RefreshSteps();
 
             EditorGUILayout.Space(8);
             SequenceSceneReferencesPanel.Draw(target, ref _usedBy, ref _outgoingRefs, ref _showRefs, ref _refsFilter, ref _refsScroll);
